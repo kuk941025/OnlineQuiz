@@ -1,10 +1,16 @@
 import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import AdminLayout from './components/admin/AdminLayout'
 
 function App() {
   return (
-    <div className="App">
-      quiz online
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Switch>
+            <Route exact path="/admin" component={AdminLayout}/>
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
 
