@@ -7,8 +7,10 @@ import { ThemeProvider } from '@material-ui/styles'
 import Blue from '@material-ui/core/colors/blue'
 import LightBlue from '@material-ui/core/colors/lightBlue'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, compose } from 'redux'
 import rootReducer from './store/reducers/rootReducer'
+import { reactReduxFirebase } from 'react-redux-firebase'
+import { reduxFirestore } from 'redux-firestore'
 import fbConfig from './config/fbConfig'
 
 
@@ -20,11 +22,28 @@ let theme = createMuiTheme({
 });
 theme = responsiveFontSizes(theme);
 
-const store = createStore(rootReducer);
+const firebaseConfig = {};
+const rrfConfig = {
+    userProfile: 'users'
+}
+
+const createStoreWithFirebase = compose(
+    reactReduxFirebase(fbConfig, rrfConfig),
+    reduxFirestore(fbConfig)
+)(createStore);
+
+const store = createStoreWithFirebase(rootReducer);
+console.log(store.dispatch);
+
+
+
+
+
 
 
 ReactDOM.render(
     <Provider store={store}>
+
         <ThemeProvider theme={theme}>
             <App />
         </ThemeProvider>
