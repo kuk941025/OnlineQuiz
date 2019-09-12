@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import * as serviceWorker from './serviceWorker';
 import { createMuiTheme, responsiveFontSizes, } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import Blue from '@material-ui/core/colors/blue'
@@ -9,7 +9,7 @@ import LightBlue from '@material-ui/core/colors/lightBlue'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import rootReducer from './store/reducers/rootReducer'
-import * as serviceWorker from './serviceWorker';
+import fbConfig from './config/fbConfig'
 
 
 let theme = createMuiTheme({
