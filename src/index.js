@@ -7,12 +7,12 @@ import { ThemeProvider } from '@material-ui/styles'
 import Blue from '@material-ui/core/colors/blue'
 import LightBlue from '@material-ui/core/colors/lightBlue'
 import { Provider } from 'react-redux'
-import { createStore, compose } from 'redux'
+import { applyMiddleware, createStore, compose } from 'redux'
 import rootReducer from './store/reducers/rootReducer'
-import { reactReduxFirebase } from 'react-redux-firebase'
-import { reduxFirestore } from 'redux-firestore'
+import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
+import { reduxFirestore, getFirestore } from 'redux-firestore'
 import fbConfig from './config/fbConfig'
-
+import thunk from 'redux-thunk'
 
 let theme = createMuiTheme({
     palette: {
@@ -22,34 +22,26 @@ let theme = createMuiTheme({
 });
 theme = responsiveFontSizes(theme);
 
-const firebaseConfig = {};
+// const firebaseConfig = {};
 const rrfConfig = {
     userProfile: 'users'
 }
 
 const createStoreWithFirebase = compose(
+    applyMiddleware(thunk.withExtraArgument({ getFirestore, getFirebase })),
     reactReduxFirebase(fbConfig, rrfConfig),
     reduxFirestore(fbConfig)
 )(createStore);
 
 const store = createStoreWithFirebase(rootReducer);
-console.log(store.dispatch);
-
-
-
-
-
 
 
 ReactDOM.render(
     <Provider store={store}>
-
         <ThemeProvider theme={theme}>
             <App />
         </ThemeProvider>
     </Provider>
-
-
     , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
