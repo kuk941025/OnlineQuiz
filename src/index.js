@@ -8,7 +8,7 @@ import Blue from '@material-ui/core/colors/blue'
 import LightBlue from '@material-ui/core/colors/lightBlue'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import tempReducer from './store/reducers/tempReducer'
+import rootReducer from './store/reducers/rootReducer'
 import * as serviceWorker from './serviceWorker';
 
 
@@ -20,8 +20,8 @@ let theme = createMuiTheme({
 });
 theme = responsiveFontSizes(theme);
 
-const store = createStore(tempReducer);
-console.log(store);
+const store = createStore(rootReducer);
+
 
 ReactDOM.render(
     <Provider store={store}>
