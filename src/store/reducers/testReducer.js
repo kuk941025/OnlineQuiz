@@ -54,8 +54,9 @@ const testReducer = (state = initState, action) => {
         case 'QUESTION_ADDED':
             console.log('question added');
             let questions = state.questions ? state.questions : [];
-            questions = questions.concat(action.result);
-
+            console.log(questions)
+            questions = questions.concat(action.question);
+            console.log(questions)
             questions.sort((a, b) => (
                 a.order > b.order ? -1 : a.order < b.order ? 1 : 0
             ));
