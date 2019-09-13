@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import makeStyles from '@material-ui/core/styles/makeStyles'
-import { progress_root, button } from '../css/Styles'
+import { progress_root, button, secondaryButton } from '../css/Styles'
 import { updateTest } from '../../store/actions/testActions'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
@@ -31,10 +31,11 @@ const useStyles = makeStyles(theme => ({
     },
     typoTitle: {
         fontWeight: 600,
-    }
+    },
+    secondaryButton: secondaryButton(theme)
 }))
 
-const TestPreparation = ({ test_id, test, updateTest }) => {
+const TestPreparation = ({ test_id, test, updateTest, questions }) => {
     const classes = useStyles();
     const [testData, setTest] = useState(null);
 
@@ -59,6 +60,7 @@ const TestPreparation = ({ test_id, test, updateTest }) => {
         else alert('Please fill all the blanks');
     }
 
+    let is_disabled = !(questions && questions.length > 0);
 
     return (
         <div className={classes.root}>
@@ -119,7 +121,7 @@ const TestPreparation = ({ test_id, test, updateTest }) => {
 
                     <Divider className={classes.divider} />
 
-                    <Button fullWidth variant="text" className={classes.button}>
+                    <Button fullWidth variant="text" className={is_disabled ? classes.secondaryButton : classes.button} disabled={is_disabled}>
                         Set Test
                     </Button>
                 </React.Fragment>
@@ -137,8 +139,12 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-
-export default connect(null, mapDispatchToProps)(TestPreparation)
+const mapStateToProps = state => {
+    return {
+        questions: state.test.questions,
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TestPreparation)
 
 TestPreparation.propTypes = {
     test: PropTypes.object.isRequired,
