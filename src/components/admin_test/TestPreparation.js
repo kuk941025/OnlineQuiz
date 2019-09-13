@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     secondaryButton: secondaryButton(theme)
 }))
 
-const TestPreparation = ({ test_id, test, updateTest, questions }) => {
+const TestPreparation = ({ test_id, test, updateTest, questions, onNext }) => {
     const classes = useStyles();
     const [testData, setTest] = useState(null);
 
@@ -121,7 +121,12 @@ const TestPreparation = ({ test_id, test, updateTest, questions }) => {
 
                     <Divider className={classes.divider} />
 
-                    <Button fullWidth variant="text" className={is_disabled ? classes.secondaryButton : classes.button} disabled={is_disabled}>
+                    <Button
+                        fullWidth
+                        variant="text"
+                        className={is_disabled ? classes.secondaryButton : classes.button}
+                        disabled={is_disabled}
+                        onClick={onNext}>
                         Set Test
                     </Button>
                 </React.Fragment>
@@ -148,4 +153,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(TestPreparation)
 
 TestPreparation.propTypes = {
     test: PropTypes.object.isRequired,
+    onNext: PropTypes.func.isRequired
 }

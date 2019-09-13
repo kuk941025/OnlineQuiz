@@ -1,3 +1,5 @@
+import { async } from "q";
+
 export const getTest = () => {
     return async (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
@@ -44,17 +46,27 @@ export const generateTest = test => {
 }
 
 export const loadTest = test_id => {
-    return async (dispatch, getState, { getFirestore }) => {
+    return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
 
 
-        let test_snap = await db.doc(`tests/${test_id}`).get();
-        if (test_snap.exists) {
-            dispatch({ type: 'TEST_LOADED', result: test_snap.data() })
-        }
-        else {
-            dispatch({ type: 'TEST_ID_NOT_VALID' })
-        }
+        // let test_snap = await db.doc(`tests/${test_id}`).get();
+        let test_snap = db.doc(`tests/${test_id}`).onSnapshot(doc => {
+            console.log('dispatched')
+            if (doc.exists){
+                dispatch({ type: 'TEST_LOADED', result: doc.data() })
+            }
+            else {
+                dispatch({type: 'TEST_ID_NOT_VALID'});
+                test_snap();
+            }
+        })
+        // if (test_snap.exists) {
+
+        // }
+        // else {
+        //     dispatch({ type: 'TEST_ID_NOT_VALID' })
+        // }
     }
 }
 
@@ -139,3 +151,15 @@ export const editQuestion = (test_id, question_id, question) => {
     }
 }
 
+
+export const updateTestState = (test_id, state) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+
+        await db.doc(`tests/${test_id}`).update({
+            current_order: state,
+        });
+
+        dispatch({ type: 'UPDATE_TEST_STATE', state })
+    }
+}

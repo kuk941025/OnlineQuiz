@@ -92,6 +92,12 @@ const testReducer = (state = initState, action) => {
             console.log('Question updated');
             alert('Question updated.');
             return state;
+
+        case 'UPDATE_TEST_STATE':
+            return {
+                ...state,
+                test_order: action.state, 
+            }
         default:
             return state;
     }
