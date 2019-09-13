@@ -9,20 +9,24 @@ const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
         border: '1px solid #eee',
-        minHeight: 400
+        minHeight: 250
     }
 }))
-const UtilList = ({data, onClose}) => {
+const UtilList = ({ data, onClick }) => {
     const classes = useStyles();
+
     return (
         <div className={classes.root}>
             <List>
-                <ListItem button>
-                    <ListItemText
-                        primary="name"
-                        secondary="hello"
-                    />
-                </ListItem>
+                {data && data.map(item => (
+                    <ListItem key={item.id} button>
+                        <ListItemText
+                            primary={item.title}
+                            secondary={item.subtitle}
+                        />
+                    </ListItem>
+                ))}
+
             </List>
         </div>
     )

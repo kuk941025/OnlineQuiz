@@ -30,16 +30,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const initTest = {
-    test_name: '',
+    name: '',
     limit_time: 10,
     limit_num: 50
 }
 
-const MakeTest = ({ open, onClose, generateTest }) => {
+const MakeTest = ({ open, onClose, generateTest, setData }) => {
     const classes = useStyles();
     const [test, setTest] = useState(initTest);
 
-    let { test_name, limit_time, limit_num } = test;
+    let { name, limit_time, limit_num } = test;
 
 
     useEffect(() => {
@@ -56,8 +56,19 @@ const MakeTest = ({ open, onClose, generateTest }) => {
     };
 
     const onConfirm = () => {
-        generateTest(test);
-        onClose();
+        let is_validate = true;
+        Object.keys(test).forEach(key => {
+            if (test[key] === '') is_validate = false;
+        });
+
+        if (is_validate) {
+            generateTest(test);
+            onClose();
+        }
+        else {
+            alert('Please fill the forms');
+        }
+
     };
 
     return (
@@ -71,9 +82,9 @@ const MakeTest = ({ open, onClose, generateTest }) => {
                     Please enter neceesary information for generating a new test.
                 </DialogContentText>
                 <Input
-                    id="test_name"
+                    id="name"
                     onChange={onChange}
-                    value={test_name}
+                    value={name}
                     placeholder="Test name"
                     className={classes.input}
                     fullWidth

@@ -2,22 +2,28 @@ export const getTest = () => {
     return async (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
 
-        firestore.doc(`temp/test`).onSnapshot(doc => {
-            console.log(doc.data());
-        })
+        let test_snap = await firestore.collection('tests').get();
+        let result = [];
+        for (let test_doc of test_snap.docs) {
+            let data = test_doc.data();
+            let { created_at, ...other } = data;
+            result.push({ id: test_doc.id, created_at: created_at.toDate(), ...other });
+        };
+
+        dispatch({ type: 'TESTS_LOADED', result })
     }
 }
 
 export const generateTest = test => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
-        const { test_name, limit_time, limit_num } = test;
+        const { name, limit_time, limit_num } = test;
 
 
         try {
             const created_at = new Date();
             let test_snap = await db.collection(`tests`).add({
-                name: test_name,
+                name,
                 current_order: 0,
                 exceptions: [],
                 limit_time,
