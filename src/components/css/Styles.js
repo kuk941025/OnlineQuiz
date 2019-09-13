@@ -39,3 +39,9 @@ export const secondaryButton = theme => ({
     },
     backgroundColor: Grey['A700'],
 })
+
+export const ListCSS = { 
+    height: 250,
+    overflowY: 'auto', 
+    border: '1px solid #eee'
+}
