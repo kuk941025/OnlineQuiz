@@ -27,7 +27,7 @@ const EditQuestion = ({ history, match, loadQuestion, question, result, removeQu
 
 
         loadQuestion(test_id, question_id);
-    }, [match.params]);
+    }, [test_id, question_id, loadQuestion]);
 
 
     useEffect(() => {
@@ -41,7 +41,7 @@ const EditQuestion = ({ history, match, loadQuestion, question, result, removeQu
             setData([]);
             setMsg('Not a valid question id')
         }
-    }, [question, result]);
+    }, [question, result, question_id]);
 
     const handleGoBack = () => {
         history.push(`/admin/test/${match.params.test_id}`);

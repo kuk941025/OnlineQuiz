@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import { progress_root, button } from '../css/Styles'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { loadTest, updateTest } from '../../store/actions/testActions'
+import { updateTest } from '../../store/actions/testActions'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -34,26 +34,13 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) => {
+const TestPreparation = ({ test_id, test, updateTest }) => {
     const classes = useStyles();
-    const [msg, setMsg] = useState('');
     const [testData, setTest] = useState(null);
 
     useEffect(() => {
-        loadTest(test_id);
-    }, [loadTest, test_id]);
-
-    useEffect(() => {
-        if (test_result !== '') {
-            if (test_result.startsWith('SUCCESS')) {
-                setTest(test);
-            }
-            else {
-                setMsg('Not a valid test id.');
-            }
-        }
-
-    }, [test, test_result])
+        if (test) setTest(test);
+    }, [test]);
 
     const handleChange = e => {
         setTest({
@@ -72,12 +59,11 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
         else alert('Please fill all the blanks');
     }
 
+
     return (
         <div className={classes.root}>
-            {!testData && <div className={classes.progress_root}><CircularProgress /></div>}
-            {msg !== '' && <Typography variant="body1" color="error" align="center">{msg}</Typography>}
 
-            {testData && msg === '' &&
+            {testData &&
                 <React.Fragment>
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Test Information
@@ -139,6 +125,7 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
                 </React.Fragment>
             }
 
+
         </div>
     )
 }
@@ -146,17 +133,13 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
 
 const mapDispatchToProps = dispatch => {
     return {
-        loadTest: (test_id) => dispatch(loadTest(test_id)),
         updateTest: (test_id, test) => dispatch(updateTest(test_id, test)),
     }
 }
-const mapStateToProps = state => {
-    const { selected_test, selected_test_result } = state.test;
 
-    return {
-        test: selected_test,
-        test_result: selected_test_result,
-    }
+
+export default connect(null, mapDispatchToProps)(TestPreparation)
+
+TestPreparation.propTypes = {
+    test: PropTypes.object.isRequired,
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(TestPreparation)

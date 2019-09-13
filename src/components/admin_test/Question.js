@@ -41,11 +41,10 @@ const Question = ({ test_id, addQuestion, mode, selected_question, editQuestion 
 
     useEffect(() => {
         if (mode === 1) {
-            console.log(selected_question);
             setQuestion(selected_question);
             setList(selected_question.selections)
         }
-    }, [mode])
+    }, [mode, selected_question])
     const [question, setQuestion] = useState({
         title: '',
         content: '',
