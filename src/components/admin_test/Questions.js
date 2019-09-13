@@ -5,6 +5,7 @@ import UtilList from '../util/UtilList'
 import Typograhpy from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { button } from '../css/Styles'
+import { Temp_Selection } from '../util/Const'
 
 const useStyles = makeStyles(theme => ({
     inputRoot: {
@@ -23,6 +24,11 @@ const useStyles = makeStyles(theme => ({
         minWidth: 150,
     },
     button: button(theme),
+    list: {
+        maxHeight: 400,
+        overflowY: 'auto',
+        width: '100%'
+    }
 }))
 const Questions = () => {
     const classes = useStyles();
@@ -46,6 +52,28 @@ const Questions = () => {
 
     const handleSelection = e => {
         setSelection(e.target.value);
+    }
+
+    const addSelection = () => {
+        if (selection === '') alert('Please fill selection query.');
+        else {
+            try {
+                let splited = selection.split(',');
+                let list = [];
+
+                let idx = 0;
+                for (let query of splited) {
+                    let names = query.split('/');
+                    list.push({ id: idx++, title: names[0], subtitle: names[1] });
+                };
+
+                setList(list);
+                setSelection('');
+            } catch (err) {
+                setList([]);
+            }
+
+        }
     }
 
     const { title, content, is_test, order } = question;
@@ -96,11 +124,13 @@ const Questions = () => {
                     margin="normal"
                     fullWidth
                     onChange={handleSelection}
-                    type="number"
                 />
 
                 <div className={classes.addRoot}>
-                    <Button variant="outlined" color="primary">
+                    <Button variant="outlined" style={{marginRight: 8}} onClick={() => setSelection(Temp_Selection)}>
+                        Set with temp data
+                    </Button>
+                    <Button variant="outlined" color="primary" onClick={addSelection}>
                         Add
                     </Button>
                 </div>
@@ -109,10 +139,13 @@ const Questions = () => {
                     Selection List
                 </Typograhpy>
 
-                <UtilList data={selectList} />
+                <div className={classes.list}>
+                    <UtilList data={selectList} />
+                </div>
+
 
             </div>
-            
+
             <Button variant="text" className={classes.button} fullWidth>
                 Add Question
             </Button>
