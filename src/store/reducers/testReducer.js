@@ -3,14 +3,14 @@ import update from 'immutability-helper'
 const initState = {
     tests: null,
     selected_test: null,
-    selected_test_result: '', 
+    selected_test_result: '',
 }
 
 const testReducer = (state = initState, action) => {
     switch (action.type) {
         case 'GENERATE_TEST_SUCCESS':
             const { id, created_at, test } = action;
-            
+
             return update(state, {
                 'tests': {
                     $push: [{
@@ -35,7 +35,7 @@ const testReducer = (state = initState, action) => {
                 selected_test: action.result,
                 selected_test_result: `SUCCESS${new Date().getTime()}`
             }
-            
+
         case 'TEST_ID_NOT_VALID':
             return {
                 ...state,
@@ -43,6 +43,9 @@ const testReducer = (state = initState, action) => {
                 selected_test_result: `FAIL${new Date().getTime()}`
             }
 
+        case 'TEST_UPDATED':
+            return state;
+            
         default:
             return state;
     }
