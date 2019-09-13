@@ -1,5 +1,5 @@
 import Blue from '@material-ui/core/colors/blue'
-
+import Grey from '@material-ui/core/colors/grey'
 export const progress_root = {
     display: 'flex',
     height: '100%',
@@ -23,4 +23,19 @@ export const button = theme => ({
     },
     backgroundColor: Blue['A700'],
 
+})
+
+export const secondaryButton = theme => ({
+    margin: `${theme.spacing(1)}px 0px`,
+    height: 40,
+    color: '#fff',
+    fontSize: '1rem',
+    fontWeight: 400,
+    '&:focus': {
+        backgroundColor: Grey['A700']
+    },
+    '&:hover': {
+        backgroundColor: Grey['A400']
+    },
+    backgroundColor: Grey['A700'],
 })
