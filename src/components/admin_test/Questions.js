@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
+import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import UtilList from '../util/UtilList'
 import Typograhpy from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { button } from '../css/Styles'
 import { Temp_Selection } from '../util/Const'
+import { addQuestion } from '../../store/actions/testActions'
+import { connect } from 'react-redux'
 
 const useStyles = makeStyles(theme => ({
     inputRoot: {
@@ -30,7 +33,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%'
     }
 }))
-const Questions = () => {
+const Questions = ({ test_id, addQuestion }) => {
     const classes = useStyles();
 
     const [question, setQuestion] = useState({
@@ -64,16 +67,41 @@ const Questions = () => {
                 let idx = 0;
                 for (let query of splited) {
                     let names = query.split('/');
-                    list.push({ id: idx++, title: names[0], subtitle: names[1] });
+                    list.push({ title: names[0], subtitle: names[1] });
                 };
 
                 setList(list);
+                setQuestion({
+                    ...question,
+                    selections: list,
+                })
                 setSelection('');
             } catch (err) {
                 setList([]);
             }
 
         }
+    }
+
+    const onSubmit = () => {
+        let is_validate = true;
+        Object.keys(question).forEach(key => {
+            if (key === 'selections' && question[key].length === 0) is_validate = false;
+            else {
+                if (question[key] === '') is_validate = false;
+            }
+
+            if (!is_validate) console.log(key);
+        });
+
+        if (is_validate && question['is_test'] >= 0 && question['is_test'] <= 1) {
+            addQuestion(test_id, question);
+        }
+        else {
+            console.log(question);
+            alert("Please recheck the form.")
+        }
+
     }
 
     const { title, content, is_test, order } = question;
@@ -127,7 +155,7 @@ const Questions = () => {
                 />
 
                 <div className={classes.addRoot}>
-                    <Button variant="outlined" style={{marginRight: 8}} onClick={() => setSelection(Temp_Selection)}>
+                    <Button variant="outlined" style={{ marginRight: 8 }} onClick={() => setSelection(Temp_Selection)}>
                         Set with temp data
                     </Button>
                     <Button variant="outlined" color="primary" onClick={addSelection}>
@@ -146,11 +174,22 @@ const Questions = () => {
 
             </div>
 
-            <Button variant="text" className={classes.button} fullWidth>
+            <Button variant="text" className={classes.button} fullWidth onClick={onSubmit}>
                 Add Question
             </Button>
         </div>
     )
 }
 
-export default Questions
+const mapDispatchToProps = dispatch => {
+    return {
+        addQuestion: (test_id, question) => dispatch(addQuestion(test_id, question)),
+    }
+}
+
+
+export default connect(null, mapDispatchToProps)(Questions)
+
+Questions.propTypes = {
+    test_id: PropTypes.string.isRequired,
+}

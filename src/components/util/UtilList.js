@@ -4,6 +4,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import PropTypes from 'prop-types'
+import uuid from 'uuid/v1'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -19,7 +20,7 @@ const UtilList = ({ data, onClick }) => {
         <div className={classes.root}>
             <List>
                 {data && data.map(item => (
-                    <ListItem key={item.id} button onClick={onClick ? () => onClick(item.id) : null}>
+                    <ListItem key={uuid()} button onClick={onClick ? () => onClick(item.id) : null}>
                         <ListItemText
                             primary={item.title}
                             secondary={item.subtitle}

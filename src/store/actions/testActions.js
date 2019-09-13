@@ -70,3 +70,38 @@ export const updateTest = (id, test) => {
         dispatch({ type: 'TEST_UPDATED' })
     }
 }
+
+export const addQuestion = (test_id, question) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+        const { order } = question;
+
+        //check if order already exist
+        let question_snap = await db.collection(`tests/${test_id}/questions`).where('order', '==', order).limit(1).get();
+
+        if (question_snap.size > 0) {
+            dispatch({ type: 'ORDER_ALREADY_EXIST' });
+            return;
+        }
+        else {
+            //add question
+            db.collection(`tests/${test_id}/questions`).add(question);
+            dispatch({ type: 'QUESTION_ADDED', question });
+        }
+    }
+}
+
+export const loadQuestions = (test_id) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+
+        let question_snap = await db.collection(`tests/${test_id}/questions`).get();
+
+        let result = [];
+        for (let question of question_snap.docs) {
+            result.push({ id: question.id, ...question.doc() })
+        }
+
+        dispatch({ type: 'QUESTIONS_LOADED', result });
+    }
+}

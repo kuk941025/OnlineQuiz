@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Questions from './Questions'
+import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles(theme => ({
     progress_root,
@@ -24,7 +25,12 @@ const useStyles = makeStyles(theme => ({
         minWidth: 150,
     },
     button: button(theme),
-
+    divider: {
+        margin: `${theme.spacing(1)}px 0px`
+    },
+    typoTitle: {
+        fontWeight: 600,
+    }
 }))
 
 const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) => {
@@ -34,7 +40,7 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
 
     useEffect(() => {
         loadTest(test_id);
-    }, [loadTest]);
+    }, [loadTest, test_id]);
 
     useEffect(() => {
         if (test_result !== '') {
@@ -72,7 +78,7 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
 
             {testData && msg === '' &&
                 <React.Fragment>
-                    <Typography variant="body1" gutterBottom>
+                    <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Test Information
                     </Typography>
                     <div className={classes.flexRoot}>
@@ -110,7 +116,12 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
                         Save
                     </Button>
 
-                    <Questions />
+                    <Divider className={classes.divider}/>
+                    
+                    <Typography className={classes.typoTitle} variant="body1" gutterBottom>
+                        Add Question
+                    </Typography>
+                    <Questions test_id={test_id} />
                 </React.Fragment>
             }
 

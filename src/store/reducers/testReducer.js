@@ -4,6 +4,7 @@ const initState = {
     tests: null,
     selected_test: null,
     selected_test_result: '',
+    questions: null, 
 }
 
 const testReducer = (state = initState, action) => {
@@ -45,7 +46,24 @@ const testReducer = (state = initState, action) => {
 
         case 'TEST_UPDATED':
             return state;
-            
+
+        case 'QUESTION_ADDED':
+            console.log('question added');
+            let questions = state.questions ? state.questions : [];
+            questions = questions.concat(action.result);
+
+            questions.sort((a, b) => (
+                a.order > b.order ? -1 : a.order < b.order ? 1 : 0
+            ));
+
+            return {
+                ...state,
+                questions, 
+            }
+
+        case 'ORDER_ALREADY_EXIST':
+            alert("Existing order.")
+            return state;
         default:
             return state;
     }
