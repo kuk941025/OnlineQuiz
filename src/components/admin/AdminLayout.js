@@ -10,7 +10,7 @@ import UtilList from '../util/UtilList'
 import MakeTest from './MakeTest'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment'
-
+import { progress_root } from '../css/Styles'
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(1),
@@ -20,14 +20,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         margin: `${theme.spacing(1)}px 0px`
     },
-    progressRoot: {
-        display: 'flex',
-        height: '100%',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 250,
-    }
+    progressRoot: progress_root, 
 }))
 
 const AdminLayout = ({ getTest, tests, history }) => {

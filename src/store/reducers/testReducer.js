@@ -2,6 +2,8 @@ import update from 'immutability-helper'
 
 const initState = {
     tests: null,
+    selected_test: null,
+    selected_test_result: '', 
 }
 
 const testReducer = (state = initState, action) => {
@@ -26,6 +28,21 @@ const testReducer = (state = initState, action) => {
                 ...state,
                 tests: action.result,
             }
+
+        case 'TEST_LOADED':
+            return {
+                ...state,
+                selected_test: action.result,
+                selected_test_result: `SUCCESS${new Date().getTime()}`
+            }
+            
+        case 'TEST_ID_NOT_VALID':
+            return {
+                ...state,
+                selected_test: [],
+                selected_test_result: `FAIL${new Date().getTime()}`
+            }
+
         default:
             return state;
     }

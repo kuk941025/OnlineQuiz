@@ -42,3 +42,18 @@ export const generateTest = test => {
 
     }
 }
+
+export const loadTest = test_id => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+
+
+        let test_snap = await db.doc(`tests/${test_id}`).get();
+        if (test_snap.exists){
+            dispatch({type: 'TEST_LOADED', result: test_snap.data()})
+        }
+        else {
+            dispatch({type: 'TEST_ID_NOT_VALID'})
+        }
+    }
+}
