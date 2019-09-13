@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const AdminLayout = ({ getTest, tests }) => {
+const AdminLayout = ({ getTest, tests, history }) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [data, setData] = useState(null);
@@ -61,6 +61,9 @@ const AdminLayout = ({ getTest, tests }) => {
         setOpen(true);
     }
 
+    const onTestClick = (id) => {
+        history.push(`admin/test/${id}`);
+    }
 
     return (
         <Container maxWidth="md">
@@ -75,7 +78,7 @@ const AdminLayout = ({ getTest, tests }) => {
                 </div>
 
                 {tests ? (
-                    <UtilList data={data} />
+                    <UtilList data={data} onClick={onTestClick}/>
                 ) : (
                         <div className={classes.progressRoot}>
                             <CircularProgress />

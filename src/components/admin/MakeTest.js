@@ -31,8 +31,8 @@ const useStyles = makeStyles(theme => ({
 
 const initTest = {
     name: '',
-    limit_time: 10,
-    limit_num: 50
+    limit_time: '',
+    limit_num: ''
 }
 
 const MakeTest = ({ open, onClose, generateTest, setData }) => {
@@ -70,6 +70,7 @@ const MakeTest = ({ open, onClose, generateTest, setData }) => {
         }
 
     };
+
 
     return (
         <Dialog

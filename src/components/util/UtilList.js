@@ -19,7 +19,7 @@ const UtilList = ({ data, onClick }) => {
         <div className={classes.root}>
             <List>
                 {data && data.map(item => (
-                    <ListItem key={item.id} button>
+                    <ListItem key={item.id} button onClick={onClick ? () => onClick(item.id) : null}>
                         <ListItemText
                             primary={item.title}
                             secondary={item.subtitle}
