@@ -7,8 +7,7 @@ import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Divider from '@material-ui/core/Divider'
-
+import Questions from './Questions'
 
 const useStyles = makeStyles(theme => ({
     progress_root,
@@ -111,7 +110,7 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
                         Save
                     </Button>
 
-
+                    <Questions />
                 </React.Fragment>
             }
 
