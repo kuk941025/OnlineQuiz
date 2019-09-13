@@ -94,10 +94,8 @@ const testReducer = (state = initState, action) => {
             return state;
 
         case 'UPDATE_TEST_STATE':
-            return {
-                ...state,
-                test_order: action.state, 
-            }
+            return state;
+            
         default:
             return state;
     }

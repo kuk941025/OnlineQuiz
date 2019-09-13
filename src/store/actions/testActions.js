@@ -54,7 +54,7 @@ export const loadTest = test_id => {
         let test_snap = db.doc(`tests/${test_id}`).onSnapshot(doc => {
             console.log('dispatched')
             if (doc.exists){
-                dispatch({ type: 'TEST_LOADED', result: doc.data() })
+                dispatch({ type: 'TEST_LOADED', result: {id: doc.id, ...doc.data()} })
             }
             else {
                 dispatch({type: 'TEST_ID_NOT_VALID'});
@@ -125,7 +125,7 @@ export const loadQuestion = (test_id, question_id) => {
         let question_snap = await db.doc(`tests/${test_id}/questions/${question_id}`).get();
 
         if (question_snap.exists) {
-            dispatch({ type: 'QUESTION_LOADED', result: question_snap.data() })
+            dispatch({ type: 'QUESTION_LOADED', result:question_snap.data() })
         }
         else {
             dispatch({ type: 'QUESTION_NOT_FOUND' });
