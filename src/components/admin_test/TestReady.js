@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
@@ -6,9 +6,8 @@ import { button, secondaryButton, ListCSS } from '../css/Styles'
 import Button from '@material-ui/core/Button'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import { updateTestState, loadQuestions } from '../../store/actions/testActions'
-import UtilList from '../util/UtilList'
-
+import { updateTestState } from '../../store/actions/testActions'
+import QuestionList from './QuestionList'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -35,26 +34,16 @@ const useStyles = makeStyles(theme => ({
     secondaryButton: secondaryButton(theme),
     list: ListCSS,
 }))
-const TestReady = ({ test, updateTestState, questions, loadQuestions }) => {
+
+const TestReady = ({ test, updateTestState }) => {
     const classes = useStyles();
-    const [questionList, setList] = useState([]);
+
 
     const handleBack = () => {
         updateTestState(test.id, -1);
     }
 
-    useEffect(() => {
-        if (questions) {
-            let list = questions.map((question, idx)=> ({
-                title: `${idx + 1}. ${question.title}`,
-                subtitle: question.content,
-            }));
 
-            setList(list);
-        }
-        else loadQuestions(test.id);
-
-    }, [questions, loadQuestions])
     return (
         <div>
             <div className={classes.root}>
@@ -78,9 +67,8 @@ const TestReady = ({ test, updateTestState, questions, loadQuestions }) => {
             <Typography variant="body1" gutterBottom>
                 Question List
             </Typography>
-            <div className={classes.list}>
-                <UtilList data={questionList} />
-            </div>
+
+            <QuestionList test_id={test.id} read_only={true} />
         </div>
     )
 }
@@ -88,16 +76,12 @@ const TestReady = ({ test, updateTestState, questions, loadQuestions }) => {
 const mapDispatchToProps = dispatch => {
     return {
         updateTestState: (test_id, state) => dispatch(updateTestState(test_id, state)),
-        loadQuestions: test_id => dispatch(loadQuestions(test_id)), 
+
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        questions: state.test.questions,
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(TestReady)
+
+export default connect(null, mapDispatchToProps)(TestReady)
 
 
 TestReady.propTypes = {

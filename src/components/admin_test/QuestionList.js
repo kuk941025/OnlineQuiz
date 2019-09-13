@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const QuestionList = ({ test_id, loadQuestions, questions, history }) => {
+const QuestionList = ({ test_id, loadQuestions, questions, history, read_only }) => {
     const classes = useStyles();
     const [questionList, setList] = useState(null);
 
@@ -26,10 +26,11 @@ const QuestionList = ({ test_id, loadQuestions, questions, history }) => {
     }, [loadQuestions, test_id])
 
     useEffect(() => {
-        console.log(questions);
+
         if (questions) {
-            let list = questions.map(question => ({
-                title: question.title,
+            console.log(questions);
+            let list = questions.map((question, idx) => ({
+                title: `${idx + 1}. ${question.is_test === 1 ? ` [TEST] ` : ``}${question.title}`,
                 subtitle: question.content,
                 id: question.id, 
             }));
@@ -47,7 +48,7 @@ const QuestionList = ({ test_id, loadQuestions, questions, history }) => {
         <React.Fragment>
             {questionList ? (
                 <div className={classes.root}>
-                    <UtilList data={questionList} onClick={handleOnQuestionClicked} />
+                    <UtilList data={questionList} onClick={read_only ? null : handleOnQuestionClicked} />
                 </div>
             ) : (
                     <div className={classes.progress_root}>
@@ -72,5 +73,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(QuestionList))
 
 QuestionList.propTypes = {
-    test_id: PropTypes.string.isRequired
+    test_id: PropTypes.string.isRequired,
+    read_only: PropTypes.bool.isRequired, 
 }

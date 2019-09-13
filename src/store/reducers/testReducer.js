@@ -54,11 +54,11 @@ const testReducer = (state = initState, action) => {
         case 'QUESTION_ADDED':
             console.log('question added');
             let questions = state.questions ? state.questions : [];
-            console.log(questions)
+
             questions = questions.concat(action.question);
-            console.log(questions)
+
             questions.sort((a, b) => (
-                a.order > b.order ? -1 : a.order < b.order ? 1 : 0
+                a.order > b.order ? 1 : a.order < b.order ? -1 : 0
             ));
 
             return {
@@ -95,7 +95,7 @@ const testReducer = (state = initState, action) => {
 
         case 'UPDATE_TEST_STATE':
             return state;
-            
+
         default:
             return state;
     }

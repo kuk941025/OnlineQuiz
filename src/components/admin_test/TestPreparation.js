@@ -117,7 +117,7 @@ const TestPreparation = ({ test_id, test, updateTest, questions, onNext }) => {
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Question List
                     </Typography>
-                    <QuestionList test_id={test_id} />
+                    <QuestionList test_id={test_id} read_only={false} />
 
                     <Divider className={classes.divider} />
 

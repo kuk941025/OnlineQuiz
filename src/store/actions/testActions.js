@@ -49,24 +49,17 @@ export const loadTest = test_id => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
 
-
-        // let test_snap = await db.doc(`tests/${test_id}`).get();
         let test_snap = db.doc(`tests/${test_id}`).onSnapshot(doc => {
-            console.log('dispatched')
-            if (doc.exists){
-                dispatch({ type: 'TEST_LOADED', result: {id: doc.id, ...doc.data()} })
+
+            if (doc.exists) {
+                dispatch({ type: 'TEST_LOADED', result: { id: doc.id, ...doc.data() } })
             }
             else {
-                dispatch({type: 'TEST_ID_NOT_VALID'});
+                dispatch({ type: 'TEST_ID_NOT_VALID' });
                 test_snap();
             }
         })
-        // if (test_snap.exists) {
 
-        // }
-        // else {
-        //     dispatch({ type: 'TEST_ID_NOT_VALID' })
-        // }
     }
 }
 
@@ -97,8 +90,12 @@ export const addQuestion = (test_id, question) => {
         }
         else {
             //add question
-            db.collection(`tests/${test_id}/questions`).add(question);
-            dispatch({ type: 'QUESTION_ADDED', question });
+            let doc_snap = await db.collection(`tests/${test_id}/questions`).add({
+                ...question,
+                is_test: Number(question.is_test),
+                order: Number(question.order),
+            });
+            dispatch({ type: 'QUESTION_ADDED', question: { id: doc_snap.id, ...question }});
         }
     }
 }
@@ -113,7 +110,7 @@ export const loadQuestions = (test_id) => {
         for (let question of question_snap.docs) {
             result.push({ id: question.id, ...question.data() })
         }
-        console.log(result);
+
         dispatch({ type: 'QUESTIONS_LOADED', result });
     }
 }
@@ -125,7 +122,7 @@ export const loadQuestion = (test_id, question_id) => {
         let question_snap = await db.doc(`tests/${test_id}/questions/${question_id}`).get();
 
         if (question_snap.exists) {
-            dispatch({ type: 'QUESTION_LOADED', result:question_snap.data() })
+            dispatch({ type: 'QUESTION_LOADED', result: question_snap.data() })
         }
         else {
             dispatch({ type: 'QUESTION_NOT_FOUND' });
@@ -145,7 +142,11 @@ export const removeQuestion = (test_id, question_id) => {
 export const editQuestion = (test_id, question_id, question) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
-        await db.doc(`tests/${test_id}/questions/${question_id}`).update(question);
+        await db.doc(`tests/${test_id}/questions/${question_id}`).update({
+            ...question,
+            is_test: Number(question.is_test),
+            order: Number(question.order),
+        });
 
         dispatch({ type: 'QUESTION_UPDATED' });
     }
