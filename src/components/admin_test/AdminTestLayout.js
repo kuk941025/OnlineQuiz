@@ -11,13 +11,13 @@ import Typography from '@material-ui/core/Typography'
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(1),
-        minHeight: 250, 
+        minHeight: 250,
     },
     progress_root,
 }))
-const AdminTestLayout = ({ match, loadTest, test_result, test }) => {
+const AdminTestLayout = ({ match, loadTest, test_result, test, test_order }) => {
     const classes = useStyles();
-    const [state, setState] = useState(0);
+    const [testOrder, setTestOrder] = useState(0);
     const [loading, setLoading] = useState(true);
     const [testData, setTest] = useState(null);
     const [msg, setMsg] = useState('');
@@ -27,23 +27,26 @@ const AdminTestLayout = ({ match, loadTest, test_result, test }) => {
     useEffect(() => {
         loadTest(test_id);
     }, [loadTest, test_id])
-    
+
     useEffect(() => {
-        if (test_result !== ''){
-            if (test_result.startsWith('SUCCESS')){
+        if (test_result !== '') {
+            if (test_result.startsWith('SUCCESS')) {
                 setTest(test);
-                setState(test.current_order);
             }
-            else if (test_result.startsWith('FAIL')){
+            else if (test_result.startsWith('FAIL')) {
                 setMsg("Not a valid test id");
             }
 
             setLoading(false);
         }
     }, [test, test_result])
-    
-    const onComplete = () => {
-        setState(state + 1);
+
+    useEffect(() => {
+        setTestOrder(test_order)
+    }, [test_order])
+
+    const handleNext = () => {
+        setTestOrder(testOrder + 1);
     }
 
 
@@ -55,7 +58,7 @@ const AdminTestLayout = ({ match, loadTest, test_result, test }) => {
                         {msg}
                     </Typography>
 
-                    {state === -1 && <TestPreparation test={testData} test_id={test_id} onComplete={onComplete}/>}
+                    {testOrder === -1 && <TestPreparation test={testData} test_id={test_id} onNext={handleNext} />}
                 </React.Fragment>
             ) : (
                     <div className={classes.progress_root}>
@@ -73,11 +76,12 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mapStateToProps = state => {
-    const { selected_test, selected_test_result } = state.test;
+    const { selected_test, selected_test_result, test_order } = state.test;
 
     return {
         test: selected_test,
         test_result: selected_test_result,
+        test_order
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AdminTestLayout)

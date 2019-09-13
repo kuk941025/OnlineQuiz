@@ -7,6 +7,7 @@ const initState = {
     questions: null, 
     selected_question: null,
     selected_question_result: '',
+    test_order: -1, 
 }
 
 const testReducer = (state = initState, action) => {
@@ -36,7 +37,8 @@ const testReducer = (state = initState, action) => {
             return {
                 ...state,
                 selected_test: action.result,
-                selected_test_result: `SUCCESS${new Date().getTime()}`
+                selected_test_result: `SUCCESS${new Date().getTime()}`,
+                test_order: action.result.current_order, 
             }
 
         case 'TEST_ID_NOT_VALID':
