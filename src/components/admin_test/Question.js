@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
@@ -7,7 +7,7 @@ import Typograhpy from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { button } from '../css/Styles'
 import { Temp_Selection } from '../util/Const'
-import { addQuestion } from '../../store/actions/testActions'
+import { addQuestion, editQuestion } from '../../store/actions/testActions'
 import { connect } from 'react-redux'
 
 const useStyles = makeStyles(theme => ({
@@ -36,9 +36,16 @@ const useStyles = makeStyles(theme => ({
 }))
 
 //mode - 0: add, 1: edit
-const Question = ({ test_id, addQuestion, mode }) => {
+const Question = ({ test_id, addQuestion, mode, selected_question, editQuestion }) => {
     const classes = useStyles();
 
+    useEffect(() => {
+        if (mode === 1) {
+            console.log(selected_question);
+            setQuestion(selected_question);
+            setList(selected_question.selections)
+        }
+    }, [mode])
     const [question, setQuestion] = useState({
         title: '',
         content: '',
@@ -100,7 +107,8 @@ const Question = ({ test_id, addQuestion, mode }) => {
         });
 
         if (is_validate && question['is_test'] >= 0 && question['is_test'] <= 1) {
-            addQuestion(test_id, question);
+            if (mode === 0) addQuestion(test_id, question);
+            else if (mode === 1) editQuestion(test_id, question.id, question); 
         }
         else {
             console.log(question);
@@ -108,6 +116,7 @@ const Question = ({ test_id, addQuestion, mode }) => {
         }
 
     }
+
 
     const { title, content, is_test, order } = question;
     return (
@@ -180,8 +189,11 @@ const Question = ({ test_id, addQuestion, mode }) => {
             </div>
 
             <Button variant="text" className={classes.button} fullWidth onClick={onSubmit}>
-                Add Question
+                {mode === 0 && 'Add Question'}
+                {mode === 1 && 'Edit Question'}
             </Button>
+
+
         </div>
     )
 }
@@ -189,6 +201,7 @@ const Question = ({ test_id, addQuestion, mode }) => {
 const mapDispatchToProps = dispatch => {
     return {
         addQuestion: (test_id, question) => dispatch(addQuestion(test_id, question)),
+        editQuestion: (test_id, question_id, question) => dispatch(editQuestion(test_id, question_id, question)),
     }
 }
 
@@ -198,4 +211,4 @@ export default connect(null, mapDispatchToProps)(Question)
 Question.propTypes = {
     test_id: PropTypes.string.isRequired,
     mode: PropTypes.number.isRequired
- }
+}

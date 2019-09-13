@@ -6,17 +6,18 @@ import { connect } from 'react-redux'
 import { loadQuestions } from '../../store/actions/testActions'
 import UtilList from '../util/UtilList'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { withRouter } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     progress_root,
     root: {
-        overflowY: 'auto', 
+        overflowY: 'auto',
         height: 250,
         border: `1px solid #eee`
     }
 }));
 
-const QuestionList = ({ test_id, loadQuestions, questions }) => {
+const QuestionList = ({ test_id, loadQuestions, questions, history }) => {
     const classes = useStyles();
     const [questionList, setList] = useState(null);
 
@@ -30,17 +31,23 @@ const QuestionList = ({ test_id, loadQuestions, questions }) => {
             let list = questions.map(question => ({
                 title: question.title,
                 subtitle: question.content,
+                id: question.id, 
             }));
 
             setList(list);
         }
     }, [questions]);
 
+    const handleOnQuestionClicked = (id) => {
+        history.push(`/admin/test/${test_id}/question/${id}`);
+    }
+
+
     return (
         <React.Fragment>
             {questionList ? (
                 <div className={classes.root}>
-                    <UtilList data={questionList} />
+                    <UtilList data={questionList} onClick={handleOnQuestionClicked} />
                 </div>
             ) : (
                     <div className={classes.progress_root}>
@@ -62,7 +69,7 @@ const mapStateToProps = state => {
         questions: state.test.questions,
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(QuestionList)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(QuestionList))
 
 QuestionList.propTypes = {
     test_id: PropTypes.string.isRequired

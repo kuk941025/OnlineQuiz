@@ -5,6 +5,8 @@ const initState = {
     selected_test: null,
     selected_test_result: '',
     questions: null, 
+    selected_question: null,
+    selected_question_result: '',
 }
 
 const testReducer = (state = initState, action) => {
@@ -70,6 +72,23 @@ const testReducer = (state = initState, action) => {
                 ...state,
                 questions: action.result, 
             }
+        case 'QUESTION_LOADED':
+            return {
+                ...state,
+                selected_question: action.result,
+                selected_question_result: `SUCCESS${new Date().getTime()}`
+            };
+
+        case 'QUESTION_NOT_FOUND':
+            return {
+                ...state,
+                selected_question_result: `FAIL${new Date().getTime()}`
+            }
+
+        case 'QUESTION_UPDATED':
+            console.log('Question updated');
+            alert('Question updated.');
+            return state;
         default:
             return state;
     }

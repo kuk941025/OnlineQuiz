@@ -122,14 +122,14 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Add Question
                     </Typography>
-                    <Question test_id={test_id} />
+                    <Question test_id={test_id} mode={0} />
 
                     <Divider className={classes.divider} />
 
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Question List
                     </Typography>
-                    <QuestionList test_id={test_id} mode={0}/>
+                    <QuestionList test_id={test_id} />
 
                     <Divider className={classes.divider} />
 

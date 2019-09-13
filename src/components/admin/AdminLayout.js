@@ -60,7 +60,7 @@ const AdminLayout = ({ getTest, tests, history }) => {
     }
 
     const onTestClick = (id) => {
-        history.push(`admin/test/${id}`);
+        history.push(`/admin/test/${id}`);
     }
 
     return (
