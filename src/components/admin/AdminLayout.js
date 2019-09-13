@@ -66,7 +66,7 @@ const AdminLayout = ({ getTest, tests, history }) => {
     }
 
     return (
-        <Container maxWidth="md">
+        <React.Fragment>
             <Paper className={classes.root}>
                 <div className={classes.titleRoot}>
                     <Typography variant="h6">
@@ -92,7 +92,7 @@ const AdminLayout = ({ getTest, tests, history }) => {
                 onClose={handleClose}
                 setData={setData}
             />
-        </Container>
+        </React.Fragment>
     )
 }
 
