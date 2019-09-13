@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Questions from './Questions'
+import Question from './Question'
 import QuestionList from './QuestionList'
 import Divider from '@material-ui/core/Divider'
 
@@ -122,14 +122,20 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Add Question
                     </Typography>
-                    <Questions test_id={test_id} />
+                    <Question test_id={test_id} />
 
                     <Divider className={classes.divider} />
 
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Question List
                     </Typography>
-                    <QuestionList test_id={test_id} />
+                    <QuestionList test_id={test_id} mode={0}/>
+
+                    <Divider className={classes.divider} />
+
+                    <Button fullWidth variant="text" className={classes.button}>
+                        Set Test
+                    </Button>
                 </React.Fragment>
             }
 

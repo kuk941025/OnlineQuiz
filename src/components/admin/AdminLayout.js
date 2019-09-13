@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import makeStyles from '@material-ui/core/styles/makeStyles'
-import Container from '@material-ui/core/Container'
-import Typography from '@material-ui/core/Typography'
-import { getTest } from '../../store/actions/testActions'
-import { connect } from 'react-redux'
-import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
-import UtilList from '../util/UtilList'
-import MakeTest from './MakeTest'
+import React, { useEffect, useState } from 'react';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import { getTest } from '../../store/actions/testActions';
+import { connect } from 'react-redux';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import UtilList from '../util/UtilList';
+import MakeTest from './MakeTest';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import moment from 'moment'
-import { progress_root } from '../css/Styles'
+import moment from 'moment';
+import { progress_root } from '../css/Styles';
+
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(1),
@@ -20,7 +20,12 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         margin: `${theme.spacing(1)}px 0px`
     },
-    progressRoot: progress_root, 
+    progressRoot: progress_root,
+    listRoot: {
+        height: 250,
+        overflowY: 'auto',
+        border: `1px solid #eee`
+    }
 }))
 
 const AdminLayout = ({ getTest, tests, history }) => {
@@ -71,7 +76,10 @@ const AdminLayout = ({ getTest, tests, history }) => {
                 </div>
 
                 {tests ? (
-                    <UtilList data={data} onClick={onTestClick}/>
+                    <div className={classes.listRoot}>
+                        <UtilList data={data} onClick={onTestClick} />
+                    </div>
+
                 ) : (
                         <div className={classes.progressRoot}>
                             <CircularProgress />

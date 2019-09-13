@@ -95,7 +95,7 @@ export const loadQuestions = (test_id) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
 
-        let question_snap = await db.collection(`tests/${test_id}/questions`).get();
+        let question_snap = await db.collection(`tests/${test_id}/questions`).orderBy('order','asc').get();
 
         let result = [];
         for (let question of question_snap.docs) {

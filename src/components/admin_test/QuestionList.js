@@ -10,7 +10,9 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 const useStyles = makeStyles(theme => ({
     progress_root,
     root: {
-        minHeight: 250,
+        overflowY: 'auto', 
+        height: 250,
+        border: `1px solid #eee`
     }
 }));
 

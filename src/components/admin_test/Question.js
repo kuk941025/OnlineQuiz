@@ -28,12 +28,15 @@ const useStyles = makeStyles(theme => ({
     },
     button: button(theme),
     list: {
-        maxHeight: 250,
         overflowY: 'auto',
-        width: '100%'
+        width: '100%',
+        height: 250,
+        border: `1px solid #eee`
     }
 }))
-const Questions = ({ test_id, addQuestion }) => {
+
+//mode - 0: add, 1: edit
+const Question = ({ test_id, addQuestion, mode }) => {
     const classes = useStyles();
 
     const [question, setQuestion] = useState({
@@ -64,11 +67,13 @@ const Questions = ({ test_id, addQuestion }) => {
                 let splited = selection.split(',');
                 let list = [];
 
-                let idx = 0;
                 for (let query of splited) {
                     let names = query.split('/');
                     list.push({ title: names[0], subtitle: names[1] });
                 };
+
+                //sort list
+                list.sort((a, b) => (a.title > b.title ? 1 : a.title < b.title ? -1 : 0))
 
                 setList(list);
                 setQuestion({
@@ -188,8 +193,9 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-export default connect(null, mapDispatchToProps)(Questions)
+export default connect(null, mapDispatchToProps)(Question)
 
-Questions.propTypes = {
+Question.propTypes = {
     test_id: PropTypes.string.isRequired,
-}
+    mode: PropTypes.number.isRequired
+ }
