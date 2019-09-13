@@ -28,7 +28,6 @@ const QuestionList = ({ test_id, loadQuestions, questions, history, read_only })
     useEffect(() => {
 
         if (questions) {
-            console.log(questions);
             let list = questions.map((question, idx) => ({
                 title: `${idx + 1}. ${question.is_test === 1 ? ` [TEST] ` : ``}${question.title}`,
                 subtitle: question.content,

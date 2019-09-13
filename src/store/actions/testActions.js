@@ -1,5 +1,3 @@
-import { async } from "q";
-
 export const getTest = () => {
     return async (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();

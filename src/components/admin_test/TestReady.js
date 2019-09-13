@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
     button: button(theme),
     btn: {
         width: '45%',
-        minWidth: 200,
         margin: theme.spacing(1),
     },
     secondaryButton: secondaryButton(theme),

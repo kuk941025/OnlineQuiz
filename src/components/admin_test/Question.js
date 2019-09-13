@@ -76,6 +76,7 @@ const Question = ({ test_id, addQuestion, mode, selected_question, editQuestion 
                 for (let query of splited) {
                     let names = query.split('/');
                     list.push({ title: names[0], subtitle: names[1] });
+
                 };
 
                 //sort list
