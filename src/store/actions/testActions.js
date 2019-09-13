@@ -24,7 +24,7 @@ export const generateTest = test => {
             const created_at = new Date();
             let test_snap = await db.collection(`tests`).add({
                 name,
-                current_order: 0,
+                current_order: -1,
                 exceptions: [],
                 limit_time,
                 limit_num,
