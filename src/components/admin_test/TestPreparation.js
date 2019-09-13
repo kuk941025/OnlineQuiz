@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Questions from './Questions'
+import QuestionList from './QuestionList'
 import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles(theme => ({
@@ -116,12 +117,19 @@ const TestPreparation = ({ test_id, loadTest, test, test_result, updateTest }) =
                         Save
                     </Button>
 
-                    <Divider className={classes.divider}/>
-                    
+                    <Divider className={classes.divider} />
+
                     <Typography className={classes.typoTitle} variant="body1" gutterBottom>
                         Add Question
                     </Typography>
                     <Questions test_id={test_id} />
+
+                    <Divider className={classes.divider} />
+
+                    <Typography className={classes.typoTitle} variant="body1" gutterBottom>
+                        Question List
+                    </Typography>
+                    <QuestionList test_id={test_id} />
                 </React.Fragment>
             }
 

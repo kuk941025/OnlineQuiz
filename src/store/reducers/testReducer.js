@@ -64,6 +64,12 @@ const testReducer = (state = initState, action) => {
         case 'ORDER_ALREADY_EXIST':
             alert("Existing order.")
             return state;
+
+        case 'QUESTIONS_LOADED':
+            return {
+                ...state,
+                questions: action.result, 
+            }
         default:
             return state;
     }

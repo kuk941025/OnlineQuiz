@@ -99,9 +99,9 @@ export const loadQuestions = (test_id) => {
 
         let result = [];
         for (let question of question_snap.docs) {
-            result.push({ id: question.id, ...question.doc() })
+            result.push({ id: question.id, ...question.data() })
         }
-
+        console.log(result);
         dispatch({ type: 'QUESTIONS_LOADED', result });
     }
 }

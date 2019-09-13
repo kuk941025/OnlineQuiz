@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     },
     button: button(theme),
     list: {
-        maxHeight: 400,
+        maxHeight: 250,
         overflowY: 'auto',
         width: '100%'
     }
