@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import { getTest } from '../../store/actions/testActions'
 import { connect } from 'react-redux'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import UtilList from '../util/UtilList'
+import MakeTest from './MakeTest'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -22,6 +22,15 @@ const useStyles = makeStyles(theme => ({
 
 const AdminLayout = ({ getTest }) => {
     const classes = useStyles();
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+    }
+
+    const onMakeTest = () => {
+        setOpen(true);
+    }
 
     useEffect(() => {
         getTest();
@@ -30,10 +39,10 @@ const AdminLayout = ({ getTest }) => {
         <Container maxWidth="md">
             <Paper className={classes.root}>
                 <div className={classes.titleRoot}>
-                    <Typography variant="body1" >
+                    <Typography variant="h6">
                         Current Tests
                     </Typography>
-                    <Button style={{marginLeft: 'auto'}} variant="outlined">
+                    <Button style={{marginLeft: 'auto'}} variant="outlined" onClick={onMakeTest}>
                         Make Test
                     </Button>
                 </div>
@@ -41,6 +50,10 @@ const AdminLayout = ({ getTest }) => {
                 <UtilList />
             </Paper>
 
+            <MakeTest 
+                open={open}
+                onClose={handleClose}
+            />
         </Container>
     )
 }

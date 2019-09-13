@@ -3,6 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -11,7 +12,7 @@ const useStyles = makeStyles(theme => ({
         minHeight: 400
     }
 }))
-const UtilList = () => {
+const UtilList = ({data, onClose}) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -28,3 +29,8 @@ const UtilList = () => {
 }
 
 export default UtilList
+
+UtilList.propTypes = {
+    data: PropTypes.array,
+    onClick: PropTypes.func,
+}
