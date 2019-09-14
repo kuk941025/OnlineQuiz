@@ -24,7 +24,7 @@ theme = responsiveFontSizes(theme);
 
 // const firebaseConfig = {};
 const rrfConfig = {
-    userProfile: 'users'
+
 }
 
 const createStoreWithFirebase = compose(
