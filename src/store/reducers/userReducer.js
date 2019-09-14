@@ -2,6 +2,7 @@ const initState = {
     tests: null,
     test: null,
     test_msg: '',
+    test_snap: null, 
 }
 
 const userReducer = (state = initState, action) => {
@@ -27,7 +28,12 @@ const userReducer = (state = initState, action) => {
 
         case 'INIT_USER_DATA':
             return initState;
-            
+
+        case 'USER_TEST_TRANSACTION_COMPLETE':
+            return {
+                ...state,     
+                test_snap: action.test_snap
+            }
         default:
             return state;
     }

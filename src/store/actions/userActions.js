@@ -17,15 +17,35 @@ export const connectToTest = (test_id) => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
 
-        let test_snap = db.doc(`tests/${test_id}`).onSnapshot(doc => {
-            if (doc.exists) {
-                dispatch({ type: 'CONNECTED_TO_TEST', result: doc.data() });
-            }
-            else {
+        let testRef = db.doc(`tests/${test_id}`);
+
+        testRef.get().then(testDoc => {
+            if (!testDoc.exists) {
                 dispatch({ type: 'CONNECTION_TO_TEST_NOT_VALID' });
-                test_snap();
-            }
+                return;
+            };
+
+            let test_snap = testRef.onSnapshot(doc => {
+                if (doc.exists) {
+                    dispatch({ type: 'CONNECTED_TO_TEST', result: doc.data() });
+                }
+            });
+
+
+            return db.runTransaction(transaction => {
+                return transaction.get(testRef).then(doc => {
+                    let users_in = doc.data().users_in + 1;
+                    transaction.update(testRef, { users_in });
+                })
+            }).then(() => {
+                dispatch({type: 'USER_TEST_TRANSACTION_COMPLETE', test_snap});
+            })
         })
+
+
+
+
+
     }
 
 }
