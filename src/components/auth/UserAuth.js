@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%'
     }
 }))
-const UserAuth = ({ auth_error, signIn, auth }) => {
+const UserAuth = ({ auth_error, signIn, auth, history }) => {
     const classes = useStyles();
     const [phone, setPhone] = useState('');
     const [msg, setMsg] = useState('');
@@ -66,6 +66,10 @@ const UserAuth = ({ auth_error, signIn, auth }) => {
     const handleSubmit = e => {
         e.preventDefault();
         signIn(phone);
+    }
+    
+    const handleLink = () => {
+        history.push('/sign_up')
     }
 
     if (auth.uid) return <Redirect to="/join" />
@@ -84,7 +88,7 @@ const UserAuth = ({ auth_error, signIn, auth }) => {
                     value={phone}
                     onChange={handleChange}
                 />
-                <Link color="primary" className={classes.link}>
+                <Link color="primary" onClick={handleLink} className={classes.link}>
                     회원가입
                 </Link>
 

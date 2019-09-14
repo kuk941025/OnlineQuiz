@@ -32,3 +32,25 @@ export const signOut = () => {
 
     }
 }
+
+export const signUp = creds => {
+    return async (dispatch, getState, { getFirebase, getFirestore }) => {
+        const firebase = getFirebase();
+        const db = getFirestore();
+
+        const { phone, first_name, last_name } = creds;
+
+        let user_snap = await db.doc(`users/${phone}`).get();
+        if (user_snap.exists) {
+            dispatch({ type: 'ALREADY_EXISTING_USER' });
+            return;
+        }
+
+        db.doc(`users/${phone}`).set({
+            first_name, last_name
+        });
+
+        let auth = await firebase.auth().signInAnonymously();
+        dispatch({ type: 'AUTH_SIGN_IN', auth });
+    }
+}

@@ -1,6 +1,7 @@
 const initState = {
     auth_error: '',
     is_admin: false,
+    sign_up_error: '', 
 }
 
 const authReducer = (state = initState, action) => {
@@ -22,6 +23,11 @@ const authReducer = (state = initState, action) => {
         case 'AUTH_SIGN_OUT':
             return state;
 
+        case 'ALREADY_EXISTING_USER':
+            return {
+                ...state,
+                sign_up_error: '이미 가입되어 있는 번호입니다.'
+            }
         default:
             return state;
     }
