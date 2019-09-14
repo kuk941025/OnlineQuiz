@@ -1,6 +1,7 @@
 const initState = {
     tests: null,
-
+    test: null,
+    test_msg: '',
 }
 
 const userReducer = (state = initState, action) => {
@@ -11,6 +12,22 @@ const userReducer = (state = initState, action) => {
                 tests: action.result, 
             }
 
+        case 'CONNECTION_TO_TEST_NOT_VALID':
+            return {
+                ...state,
+                test_msg: '잘못된 주소입니다.',
+            }
+
+        case 'CONNECTED_TO_TEST':
+            return {
+                ...state,
+                test: action.result,
+                test_msg: `SUCCESS${new Date().getTime()}`
+            }
+
+        case 'INIT_USER_DATA':
+            return initState;
+            
         default:
             return state;
     }

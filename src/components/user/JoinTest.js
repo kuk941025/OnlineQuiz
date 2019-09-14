@@ -7,7 +7,7 @@ import { getAvailableTests } from '../../store/actions/userActions'
 import moment from 'moment'
 import UtilList from '../util/UtilList'
 import Typography from '@material-ui/core/Typography'
-
+import { withRouter } from 'react-router-dom'
 const useStyles = makeStyles(theme => ({
     progress_root,
     list: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
         overflowY: 'auto'
     }
 }))
-const JoinTest = ({ getAvailableTests, tests }) => {
+const JoinTest = ({ getAvailableTests, tests, history }) => {
     const classes = useStyles();
     const [testData, setData] = useState(null);
 
@@ -29,12 +29,17 @@ const JoinTest = ({ getAvailableTests, tests }) => {
             let list = tests.map(test => ({
                 title: `${test.name}`,
                 subtitle: moment(test.created_at.toDate()).calendar(),
+                id: test.id
             }));
             setData(list);
         }
     }, [tests])
 
-    console.log(testData);
+    const handleClick = (id) => {
+        history.push(`/test/${id}`);
+    }
+
+    console.log(history);
     return (
         <React.Fragment>
             {testData ? (
@@ -43,7 +48,7 @@ const JoinTest = ({ getAvailableTests, tests }) => {
                         참가하실 방을 선택해주세요.
                     </Typography>
                     <div className={classes.list}>
-                        <UtilList data={testData} />
+                        <UtilList data={testData} onClick={handleClick}/>
                     </div>
                 </div>
 
@@ -69,4 +74,4 @@ const mapStateToProps = state => {
         tests: state.user.tests
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(JoinTest)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(JoinTest))

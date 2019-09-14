@@ -6,6 +6,7 @@ import JoinTest from './JoinTest'
 import { connect } from 'react-redux'
 import { signOut } from '../../store/actions/authActions'
 import { Redirect } from 'react-router-dom'
+import TakeTest from './TakeTest'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -24,19 +25,19 @@ const UserLayout = ({ match, signOut, auth }) => {
 
     useEffect(() => {
         if (match.path.startsWith('/join')) setState(0);
+        else if (match.path.startsWith('/test')) setState(1);
     }, [match.path]);
 
 
     if (!auth.uid) return <Redirect to="/" />
     return (
         <div>
-
             <Link color="primary" onClick={signOut} className={classes.link}>
                 로그아웃
             </Link>
             <Paper className={classes.root}>
                 {state === 0 && <JoinTest />}
-
+                {state === 1 && match.params.id && <TakeTest test_id={match.params.id} />}
             </Paper>
         </div>
     )

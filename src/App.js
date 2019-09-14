@@ -15,6 +15,7 @@ function App() {
         <Container maxWidth="sm">
           <Switch>
             <Route exact path="/join" component={UserLayout} />
+            <Route path = "/test/:id" component={UserLayout} />
             <Route exact path="/sign_up" component={UserSignUp} />
             <Route exact path="/" component={UserAuth} />
             <Route exact path="/admin" component={AdminLayout} />
