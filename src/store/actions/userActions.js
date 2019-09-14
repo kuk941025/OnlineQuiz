@@ -16,6 +16,9 @@ export const getAvailableTests = () => {
 export const connectToTest = (test_id) => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
+        const state = getState();
+        console.log(state.auth)
+        const { phone } = state.auth.user;
 
         let testRef = db.doc(`tests/${test_id}`);
 
@@ -38,17 +41,18 @@ export const connectToTest = (test_id) => {
                     transaction.update(testRef, { users_in });
                 })
             }).then(() => {
-                dispatch({type: 'USER_TEST_TRANSACTION_COMPLETE', test_snap});
+                db.doc(`tests/${test_id}/users/${phone}`).set({
+                    ...state.auth.user, 
+                    joined_at: new Date(),
+                });
+                dispatch({ type: 'USER_TEST_TRANSACTION_COMPLETE', test_snap });
             })
         })
-
-
-
-
-
     }
 
 }
+
+
 
 export const initUser = () => {
     return { type: 'INIT_USER_DATA' }

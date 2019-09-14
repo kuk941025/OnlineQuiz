@@ -8,15 +8,22 @@ import moment from 'moment'
 import UtilList from '../util/UtilList'
 import Typography from '@material-ui/core/Typography'
 import { withRouter } from 'react-router-dom'
+import Blue from '@material-ui/core/colors/blue'
 const useStyles = makeStyles(theme => ({
     progress_root,
     list: {
         border: `1px solid #eee`,
         height: 250,
         overflowY: 'auto'
+    },
+    typoName: {
+        marginTop: theme.spacing(1) / 2,
+        fontWeight: 600,
+        color: Blue['A200']
     }
 }))
-const JoinTest = ({ getAvailableTests, tests, history }) => {
+
+const JoinTest = ({ getAvailableTests, tests, history, user }) => {
     const classes = useStyles();
     const [testData, setData] = useState(null);
 
@@ -44,11 +51,16 @@ const JoinTest = ({ getAvailableTests, tests, history }) => {
         <React.Fragment>
             {testData ? (
                 <div>
+                    {user &&
+                        <Typography variant="body1" className={classes.typoName}>
+                            {`${user.last_name}${user.first_name}님`}
+                        </Typography>
+                    }
                     <Typography variant="body1" gutterBottom>
-                        참가하실 방을 선택해주세요.
+                        {`참가하실 방을 선택해주세요.`}
                     </Typography>
                     <div className={classes.list}>
-                        <UtilList data={testData} onClick={handleClick}/>
+                        <UtilList data={testData} onClick={handleClick} />
                     </div>
                 </div>
 
@@ -71,7 +83,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        tests: state.user.tests
+        tests: state.user.tests,
+        user: state.auth.user
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(JoinTest))

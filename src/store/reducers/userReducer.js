@@ -34,6 +34,7 @@ const userReducer = (state = initState, action) => {
                 ...state,     
                 test_snap: action.test_snap
             }
+            
         default:
             return state;
     }

@@ -11,15 +11,18 @@ const useStyles = makeStyles(theme => ({
     progress_root,
 }));
 
-const TakeTest = ({ test_id, connectToTest, test, test_msg, initUser }) => {
+const TakeTest = ({ test_id, connectToTest, test, test_msg, user }) => {
     const classes = useStyles();
     const [testData, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState('');
 
+
     useEffect(() => {
-        connectToTest(test_id);
-    }, [connectToTest]);
+        //connect to test after user data is loaded.
+        if (user) connectToTest(test_id);
+
+    }, [connectToTest, user]);
 
     useEffect(() => {
         if (test_msg !== '') {
@@ -50,7 +53,13 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, initUser }) => {
                         <Typography variant="body1" color="error" align="center">
                             {msg}
                         </Typography>
-                        {test && test.current_order === 0 && <TestReady test={testData} />}
+                        {test &&
+                            <React.Fragment>
+                                {test.current_order === 0 && <TestReady test={testData} />}
+                            </React.Fragment>
+                        }
+
+
                     </React.Fragment>
                 )}
 
@@ -62,6 +71,7 @@ const mapStateToProps = state => {
     return {
         test: state.user.test,
         test_msg: state.user.test_msg,
+        user: state.auth.user,
     }
 }
 const mapDispatchToProps = dispatch => {

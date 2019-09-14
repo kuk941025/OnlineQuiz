@@ -29,10 +29,10 @@ const TestReady = ({ test }) => {
             </Typography>
             <div className={classes.flexRoot}>
                 <Typography variant="body1" >
-                    참여 인원:
+                    참여 인원: 
                 </Typography>
                 <Typography variant="body1" color="primary">
-                    {test.users_in}
+                    {` ${test.users_in}`}
                 </Typography>
             </div>
         </div>

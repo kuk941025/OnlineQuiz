@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper'
 import Link from '@material-ui/core/Link'
 import JoinTest from './JoinTest'
 import { connect } from 'react-redux'
-import { signOut } from '../../store/actions/authActions'
+import { signOut, getUserData } from '../../store/actions/authActions'
 import { Redirect } from 'react-router-dom'
 import TakeTest from './TakeTest'
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(1),
     }
 }))
-const UserLayout = ({ match, signOut, auth }) => {
+const UserLayout = ({ match, signOut, auth, getUserData }) => {
     const classes = useStyles();
     const [state, setState] = useState(-1);
 
@@ -28,6 +28,11 @@ const UserLayout = ({ match, signOut, auth }) => {
         else if (match.path.startsWith('/test')) setState(1);
     }, [match.path]);
 
+    useEffect(() => {
+        if (auth.uid){
+            getUserData();
+        }
+    }, [auth.uid, getUserData]);
 
     if (!auth.uid) return <Redirect to="/" />
     return (
@@ -46,6 +51,7 @@ const UserLayout = ({ match, signOut, auth }) => {
 const mapDispatchToProps = dispatch => {
     return {
         signOut: () => dispatch(signOut()),
+        getUserData: () => dispatch(getUserData()), 
     }
 }
 
