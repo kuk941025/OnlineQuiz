@@ -92,7 +92,7 @@ export const addQuestion = (test_id, question) => {
                 ...question,
                 is_test: Number(question.is_test),
                 order: Number(question.order),
-                answered: 0, 
+                answered: 0,
             });
             dispatch({ type: 'QUESTION_ADDED', question: { id: doc_snap.id, ...question } });
         }
@@ -169,8 +169,25 @@ export const nextQuestion = (test_id) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
         const state = getState();
-        const { questions } = state.test;
+        const { questions, cur_question_idx } = state.test;
 
-        console.log(questions);
+        let next_idx = cur_question_idx + 1;
+        if (next_idx >= questions.length) {
+            //end
+            next_idx = -1;
+            db.doc(`tests/${test_id}`).update({
+                current_order: -1,
+            });
+
+        }
+        else {
+            db.doc(`tests/${test_id}`).update({
+                current_order: questions[next_idx].order,
+            });
+        }
+
+
+        dispatch({ type: 'NEXT_QUESTION_IDX', next_idx });
+
     }
 }

@@ -8,7 +8,7 @@ const initState = {
     selected_question: null,
     selected_question_result: '',
     test_order: -1,
-    cur_question: -1,  
+    cur_question_idx: -1,  
 }
 
 const testReducer = (state = initState, action) => {
@@ -96,6 +96,12 @@ const testReducer = (state = initState, action) => {
 
         case 'UPDATE_TEST_STATE':
             return state;
+
+        case 'NEXT_QUESTION_IDX':
+            return {
+                ...state,
+                cur_question_idx: action.next_idx
+            };
 
         default:
             return state;

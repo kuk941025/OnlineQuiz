@@ -43,7 +43,7 @@ const TestReady = ({ test, updateTestState, nextQuestion }) => {
     }
 
     const handleStart = () => {
-        nextQuestion();
+        nextQuestion(test.id);
     }
 
     return (
@@ -78,7 +78,7 @@ const TestReady = ({ test, updateTestState, nextQuestion }) => {
 const mapDispatchToProps = dispatch => {
     return {
         updateTestState: (test_id, state) => dispatch(updateTestState(test_id, state)),
-        nextQuestion: () => dispatch(nextQuestion()),
+        nextQuestion: (test_id) => dispatch(nextQuestion(test_id)),
     }
 }
 
