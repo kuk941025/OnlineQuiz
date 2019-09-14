@@ -24,7 +24,7 @@ theme = responsiveFontSizes(theme);
 
 // const firebaseConfig = {};
 const rrfConfig = {
-
+    attachAuthIsReady: true
 }
 
 const createStoreWithFirebase = compose(
@@ -35,16 +35,18 @@ const createStoreWithFirebase = compose(
 
 const store = createStoreWithFirebase(rootReducer);
 
+store.firebaseAuthIsReady.then(() => {
+    ReactDOM.render(
+        <Provider store={store}>
+            <ThemeProvider theme={theme}>
+                <App />
+            </ThemeProvider>
+        </Provider>
+        , document.getElementById('root'));
 
-ReactDOM.render(
-    <Provider store={store}>
-        <ThemeProvider theme={theme}>
-            <App />
-        </ThemeProvider>
-    </Provider>
-    , document.getElementById('root'));
+    // If you want your app to work offline and load faster, you can change
+    // unregister() to register() below. Note this comes with some pitfalls.
+    // Learn more about service workers: https://bit.ly/CRA-PWA
+    serviceWorker.unregister();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+})
