@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { loadTest, updateTestState } from '../../store/actions/testActions'
 import Typography from '@material-ui/core/Typography'
 import TestReady from './TestReady'
+import TestManagement from './TestManagement'
+
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(1),
@@ -15,6 +17,7 @@ const useStyles = makeStyles(theme => ({
     },
     progress_root,
 }))
+
 const AdminTestLayout = ({ match, loadTest, test_result, test, test_order, updateTestState }) => {
     const classes = useStyles();
     const [testOrder, setTestOrder] = useState(0);
@@ -61,6 +64,7 @@ const AdminTestLayout = ({ match, loadTest, test_result, test, test_order, updat
                         <React.Fragment>
                             {testOrder === -1 && <TestPreparation test={testData} test_id={test_id} onNext={handleNext} />}
                             {testOrder === 0 && <TestReady test={testData} />}
+                            {testOrder > 0 && <TestManagement test={testData} />}
                         </React.Fragment>
                     }
 

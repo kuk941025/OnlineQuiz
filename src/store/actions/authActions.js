@@ -17,6 +17,9 @@ export const signIn = (phone) => {
             let auth = await firebase.auth().signInAnonymously();
             db.doc(`users/${phone}`).update({
                 uid: auth.user.uid,
+            });
+            db.doc(`auths/${auth.user.uid}`).set({
+                phone, created_at: new Date(), ...user_snap.data()
             })
             dispatch({ type: 'AUTH_SIGN_IN', auth });
         } catch (err) {
@@ -55,19 +58,29 @@ export const signUp = creds => {
         db.doc(`users/${phone}`).set({
             first_name, last_name, uid: auth.user.uid,
         });
+        db.doc(`auths/${auth.user.uid}`).set({
+            phone, created_at: new Date(), first_name, last_name
+        })
         dispatch({ type: 'AUTH_SIGN_IN', auth });
     }
 }
 
 export const getUserData = () => {
-    return async (dispatch, getState, { getFirestore }) => {
+    return async (dispatch, getState, { getFirestore, getFirebase }) => {
         const uid = getState().firebase.auth.uid;
         const db = getFirestore();
 
         let user_snap = await db.collection(`users`).where('uid', '==', uid).limit(1).get();
+        let user;
+        if (user_snap.size === 0){
+            //if not found find from auths collection
+            let auths_snap = await db.doc(`auths/${uid}`).get();
+            
+            return;
+        }
+        else user = user_snap.docs[0];
 
-        let user = user_snap.docs[0];
-
+        
         dispatch({ type: 'USER_DATA_LOADED', result: {phone: user.id, ...user.data()} })
     }
 }

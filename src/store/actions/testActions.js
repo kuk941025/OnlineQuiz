@@ -92,8 +92,9 @@ export const addQuestion = (test_id, question) => {
                 ...question,
                 is_test: Number(question.is_test),
                 order: Number(question.order),
+                answered: 0, 
             });
-            dispatch({ type: 'QUESTION_ADDED', question: { id: doc_snap.id, ...question }});
+            dispatch({ type: 'QUESTION_ADDED', question: { id: doc_snap.id, ...question } });
         }
     }
 }
@@ -160,5 +161,16 @@ export const updateTestState = (test_id, state) => {
         });
 
         dispatch({ type: 'UPDATE_TEST_STATE', state })
+    }
+}
+
+
+export const nextQuestion = (test_id) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+        const state = getState();
+        const { questions } = state.test;
+
+        console.log(questions);
     }
 }

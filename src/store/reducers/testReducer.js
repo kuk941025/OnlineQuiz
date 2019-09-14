@@ -7,7 +7,8 @@ const initState = {
     questions: null, 
     selected_question: null,
     selected_question_result: '',
-    test_order: -1, 
+    test_order: -1,
+    cur_question: -1,  
 }
 
 const testReducer = (state = initState, action) => {

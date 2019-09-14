@@ -6,7 +6,7 @@ import { button, secondaryButton, ListCSS } from '../css/Styles'
 import Button from '@material-ui/core/Button'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import { updateTestState } from '../../store/actions/testActions'
+import { updateTestState, nextQuestion } from '../../store/actions/testActions'
 import QuestionList from './QuestionList'
 
 const useStyles = makeStyles(theme => ({
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     list: ListCSS,
 }))
 
-const TestReady = ({ test, updateTestState }) => {
+const TestReady = ({ test, updateTestState, nextQuestion }) => {
     const classes = useStyles();
 
 
@@ -42,6 +42,9 @@ const TestReady = ({ test, updateTestState }) => {
         updateTestState(test.id, -1);
     }
 
+    const handleStart = () => {
+        nextQuestion();
+    }
 
     return (
         <div>
@@ -56,7 +59,7 @@ const TestReady = ({ test, updateTestState }) => {
                     <Button className={classNames(classes.secondaryButton, classes.btn)} onClick={handleBack}>
                         Go back
                     </Button>
-                    <Button className={classNames(classes.button, classes.btn)}>
+                    <Button className={classNames(classes.button, classes.btn)} onClick={handleStart}>
                         Start
                     </Button>
                 </div>
@@ -75,7 +78,7 @@ const TestReady = ({ test, updateTestState }) => {
 const mapDispatchToProps = dispatch => {
     return {
         updateTestState: (test_id, state) => dispatch(updateTestState(test_id, state)),
-
+        nextQuestion: () => dispatch(nextQuestion()),
     }
 }
 
