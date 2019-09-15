@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import { connect } from 'react-redux'
-import { connectToQuestion, loadQuestions } from '../../store/actions/testActions'
+import { connectToQuestion, loadQuestions, startQuestion, nextQuestion } from '../../store/actions/testActions'
 import { button, secondaryButton } from '../css/Styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     },
 
 }))
-const TestManagement = ({ test, selected_question, connectToQuestion, loadQuestions, questions }) => {
+const TestManagement = ({ test, selected_question, connectToQuestion, loadQuestions, questions, startQuestion, nextQuestion }) => {
     const classes = useStyles();
     const [question, setQuestion] = useState(null);
     const [questionList, setList] = useState(null);
@@ -92,7 +92,6 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
                 })
             }
 
-            console.log('called');
             let timer = setInterval(setTimer, interval);
         }
     }, [question])
@@ -108,7 +107,6 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
             </div>
         )
     }
-
 
     return (
         <div className={classes.root}>
@@ -142,12 +140,17 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
 
             <div className={classes.btnMargin}>
                 {question.state === 0 &&
-                    <Button fullWidth className={classNames(classes.button)}>
+                    <Button fullWidth className={classNames(classes.button)} onClick={() => startQuestion(test, question.id)}>
                         Start
-                </Button>
+                    </Button>
                 }
                 {question.state === 1 &&
                     <LinearProgress color="primary" variant="determinate" value={remaining} />
+                }
+                {question.state === 2 && 
+                    <Button fullWidth className={classes.button} onClick={() => nextQuestion(test)}>
+                        Next Question
+                    </Button>
                 }
             </div>
 
@@ -168,6 +171,8 @@ const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: (test_id, question_order) => dispatch(connectToQuestion(test_id, question_order)),
         loadQuestions: (test_id) => dispatch(loadQuestions(test_id)),
+        startQuestion: (test, question_id) => dispatch(startQuestion(test, question_id)), 
+        nextQuestion: (test) => dispatch(nextQuestion(test))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TestManagement)

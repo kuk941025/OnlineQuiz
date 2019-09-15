@@ -1,3 +1,6 @@
+import { Server_URL } from '../../components/util/Const'
+import axios from 'axios'
+
 export const getTest = () => {
     return async (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
@@ -165,31 +168,36 @@ export const updateTestState = (test_id, state) => {
 }
 
 
-export const nextQuestion = (test_id) => {
+export const nextQuestion = (test) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
         const state = getState();
-        const { questions, cur_question_idx } = state.test;
 
-        let next_idx = cur_question_idx + 1;
+        const { questions } = state.test;
+        const { current_order } = test;
 
-
-        if (next_idx >= questions.length) {
-            //end
-            next_idx = -1;
-            db.doc(`tests/${test_id}`).update({
-                current_order: -1,
-            });
-
+        if (current_order < 0) {
+            db.doc(`tests/${test.id}`).update({
+                current_order: current_order + 1,
+            })
         }
         else {
-            db.doc(`tests/${test_id}`).update({
-                current_order: questions[next_idx].order,
+            let next_idx = questions.findIndex(item => (
+                item.order === current_order
+            )) + 1;
+
+            if (next_idx >= questions.length) {
+                next_idx = -2;
+            };
+
+            db.doc(`tests/${test.id}`).update({
+                current_order: next_idx >= 0 ? questions[next_idx].order : next_idx,
             });
+
+            console.log(next_idx >= 0 ? questions[next_idx].order : next_idx);
         }
 
-
-        dispatch({ type: 'NEXT_QUESTION_IDX', next_idx });
+        dispatch({ type: 'NEXT_QUESTION' });
 
     }
 }
@@ -203,11 +211,27 @@ export const connectToQuestion = (test_id, question_order) => {
 
         let question_snap = db.collection(`tests/${test_id}/questions`).where('order', '==', question_order).limit(1).onSnapshot(querySnap => {
             if (querySnap.size === 1) {
-                dispatch({ type: 'CONNECTED_TO_QUESTION', result: querySnap.docs[0].data() });
+                let question_doc = querySnap.docs[0];
+
+                dispatch({ type: 'CONNECTED_TO_QUESTION', result: { id: question_doc.id, ...question_doc.data() } });
             }
         });
 
         dispatch({ type: 'QUESTION_SNAPSHOT', question_snap })
 
+    }
+}
+
+export const startQuestion = (test, question_id) => {
+    return async (dispatch, getState) => {
+
+        const { id, limit_time } = test;
+        axios.post(`${Server_URL}/start_question`, {
+            test_id: id,
+            time_limit: limit_time,
+            question_id
+        });
+
+        dispatch({ type: 'QUESTION_STARTED' })
     }
 }
