@@ -7,8 +7,8 @@ const initState = {
     questions: null, 
     selected_question: null,
     selected_question_result: '',
-    test_order: -1,
-    cur_question_idx: -1,  
+    cur_question_idx: -1,
+    question_snap: null,   
 }
 
 const testReducer = (state = initState, action) => {
@@ -39,7 +39,6 @@ const testReducer = (state = initState, action) => {
                 ...state,
                 selected_test: action.result,
                 selected_test_result: `SUCCESS${new Date().getTime()}`,
-                test_order: action.result.current_order, 
             }
 
         case 'TEST_ID_NOT_VALID':
@@ -102,6 +101,18 @@ const testReducer = (state = initState, action) => {
                 ...state,
                 cur_question_idx: action.next_idx
             };
+
+        case 'QUESTION_SNAPSHOT':
+            return {
+                ...state,
+                question_snap: action.question_snap,
+            }
+
+        case 'CONNECTED_TO_QUESTION':
+            return {
+                ...state,
+                selected_question: action.result, 
+            }
 
         default:
             return state;

@@ -63,7 +63,7 @@ const AdminTestLayout = ({ match, loadTest, test_result, test, test_order, updat
                     {testData &&
                         <React.Fragment>
                             {testOrder === -1 && <TestPreparation test={testData} test_id={test_id} onNext={handleNext} />}
-                            {testOrder >= 0 && <TestReady test={testData} />}
+                            {testOrder === 0 && <TestReady test={testData} />}
                             {testOrder > 0 && <TestManagement test={testData} />}
                         </React.Fragment>
                     }

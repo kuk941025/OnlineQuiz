@@ -172,6 +172,8 @@ export const nextQuestion = (test_id) => {
         const { questions, cur_question_idx } = state.test;
 
         let next_idx = cur_question_idx + 1;
+
+
         if (next_idx >= questions.length) {
             //end
             next_idx = -1;
@@ -188,6 +190,24 @@ export const nextQuestion = (test_id) => {
 
 
         dispatch({ type: 'NEXT_QUESTION_IDX', next_idx });
+
+    }
+}
+
+export const connectToQuestion = (test_id, question_order) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+        const state = getState().test;
+
+        if (state.question_snap) state.question_snap();
+
+        let question_snap = db.collection(`tests/${test_id}/questions`).where('order', '==', question_order).limit(1).onSnapshot(querySnap => {
+            if (querySnap.size === 1) {
+                dispatch({ type: 'CONNECTED_TO_QUESTION', result: querySnap.docs[0].data() });
+            }
+        });
+
+        dispatch({ type: 'QUESTION_SNAPSHOT', question_snap })
 
     }
 }
