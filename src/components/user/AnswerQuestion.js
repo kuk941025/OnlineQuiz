@@ -14,6 +14,8 @@ import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import Radio from '@material-ui/core/Radio'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import AnswerPicker from '../util/AnswerPicker'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -24,15 +26,16 @@ const useStyles = makeStyles(theme => ({
     },
     typoTitle: {
         fontWeight: 600,
+        margin: `${theme.spacing(1)}px 0px`
     },
     questionRoot: {
         height: '20%',
-        border: `1px solid ${Grey['200']}`,
+        border: `1px solid ${Grey['300']}`,
         padding: theme.spacing(1),
     },
     answerRoot: {
         height: '70%',
-        border: `1px solid ${Grey['200']}`,
+        border: `1px solid ${Grey['300']}`,
         padding: theme.spacing(1),
     },
     button: button(theme),
@@ -43,12 +46,7 @@ const useStyles = makeStyles(theme => ({
     textField: {
         margin: `${theme.spacing(1)}px 0px`
     },
-    formControl: {
-        padding: theme.spacing(1),
-        border: `1px solid ${Grey['200']}`,
-        overflowY: 'auto',
-        height: `calc(100% - 120px)`
-    }
+
 }))
 
 const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question }) => {
@@ -83,6 +81,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
     return (
         <div className={classes.root}>
             <div className={classes.questionRoot}>
+                <LinearProgress />
                 <Typography variant="body1" className={classes.typoTitle} gutterBottom>
                     {question.title}
                 </Typography>
@@ -95,29 +94,8 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
                 <Typography variant="body1" className={classes.typoTitle} gutterBottom>
                     정답 선택
                 </Typography>
-                <TextField
-                    fullWidth
-                    label="정답 입력"
-                    variant="outlined"
-                    placeholder="이름을 입력해주세요.(성없이도 가능)"
-                    className={classes.textField}
-                />
 
-                <div className={classes.formControl}>
-                    <FormControl component="fieldset" >
-                        <RadioGroup name="selections">
-                            {question.selections.map((item, idx) => (
-                                <FormControlLabel
-                                    key={idx}
-                                    control={<Radio />}
-                                    value={item.title}
-                                    label={item.title}
-                                />
-                            ))}
-                        </RadioGroup>
-                    </FormControl>
-                </div>
-
+                <AnswerPicker selections={question.selections} />
             </div>
             <Button className={classes.button} fullWidth>
                 제출
