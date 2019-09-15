@@ -22,6 +22,8 @@ export const connectToTest = (test_id) => {
 
         let testRef = db.doc(`tests/${test_id}`);
 
+        if (state.user.test_snap) state.user.test_snap();
+
         testRef.get().then(testDoc => {
             if (!testDoc.exists) {
                 dispatch({ type: 'CONNECTION_TO_TEST_NOT_VALID' });
@@ -52,8 +54,53 @@ export const connectToTest = (test_id) => {
 
 }
 
+export const disconnectToServer = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        if (state.user.test_snap) state.user.test_snap();
 
+        dispatch({type: 'DISCONNECTED_FROM_TEST'})
+    }
+}
 
 export const initUser = () => {
     return { type: 'INIT_USER_DATA' }
+}
+
+
+export const loadQuestions = (test_id) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+
+        let question_snap = await db.collection(`tests/${test_id}/questions`).get();
+
+        let result = [];
+        for (let question_doc of question_snap.docs){
+            result.push({id: question_doc.id, ...question_doc.data()})
+        };
+
+        dispatch({type: 'USER_QUESTIONS_LOADED', result})
+    }
+}
+
+export const connectToQuestion = (test) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+        const state = getState();
+        const { current_order, id } = test;
+
+        if (state.user.question_snap) state.user.question_snap();
+        console.log(test);
+
+        let question_snap = db.collection(`tests/${id}/questions`).where('order', '==', current_order).limit(1).onSnapshot(snap => {
+            
+            if (snap.size === 1){
+                let doc = snap.docs[0];
+                console.log(doc.data());
+                dispatch({type: 'CONNECTED_TO_QUESTION', result: {id: doc.id, ...doc.data()}})
+            }
+        });
+
+        dispatch({type: 'USER_CONNECTION_TO_QUESTION', question_snap});
+    }
 }

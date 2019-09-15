@@ -2,7 +2,10 @@ const initState = {
     tests: null,
     test: null,
     test_msg: '',
-    test_snap: null, 
+    test_snap: null,
+    questions: null,
+    question_snap: null,
+    selected_question: null,   
 }
 
 const userReducer = (state = initState, action) => {
@@ -35,6 +38,29 @@ const userReducer = (state = initState, action) => {
                 test_snap: action.test_snap
             }
             
+        case 'DISCONNECTED_FROM_TEST':
+            return {
+                ...state,
+                test_snap: null,
+            }
+
+        case 'USER_QUESTIONS_LOADED':
+            return {
+                ...state,
+                questions: action.result,
+            }
+
+        case 'USER_CONNECTION_TO_QUESTION':
+            return {
+                ...state,
+                question_snap: action.question_snap
+            }
+
+        case 'CONNECTED_TO_QUESTION':
+            return {
+                ...state,
+                selected_question: action.result, 
+            }
         default:
             return state;
     }

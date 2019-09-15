@@ -3,15 +3,17 @@ import makeStyles from '@material-ui/core/styles/makeStyles'
 import PropTypes from 'prop-types'
 import TestReady from './TestReady'
 import { connect } from 'react-redux'
-import { connectToTest, initUser } from '../../store/actions/userActions'
+import { connectToTest, initUser, disconnectToServer, loadQuestions } from '../../store/actions/userActions'
 import { progress_root } from '../css/Styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Typography from '@material-ui/core/Typography'
+import AnswerQuestion from './AnswerQuestion'
+
 const useStyles = makeStyles(theme => ({
     progress_root,
 }));
 
-const TakeTest = ({ test_id, connectToTest, test, test_msg, user }) => {
+const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions }) => {
     const classes = useStyles();
     const [testData, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -21,8 +23,11 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user }) => {
     useEffect(() => {
         //connect to test after user data is loaded.
         if (user) connectToTest(test_id);
-
-    }, [connectToTest, user, test_id]);
+        
+        return () => {
+            disconnectToServer();
+        }
+    }, [connectToTest, user, test_id, disconnectToServer]);
 
     useEffect(() => {
         if (test_msg !== '') {
@@ -41,6 +46,10 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user }) => {
         }
     }, [test, test_msg]);
 
+    useEffect(() => {
+        console.log('called')
+        loadQuestions(test_id);
+    }, [loadQuestions]);
 
     return (
         <React.Fragment>
@@ -56,6 +65,7 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user }) => {
                         {test &&
                             <React.Fragment>
                                 {test.current_order === 0 && <TestReady test={testData} />}
+                                {test.current_order > 0 && <AnswerQuestion test={testData} />}
                             </React.Fragment>
                         }
 
@@ -78,6 +88,7 @@ const mapDispatchToProps = dispatch => {
     return {
         connectToTest: (test_id) => dispatch(connectToTest(test_id)),
         initUser: () => dispatch(initUser()),
+        loadQuestions: (test_id) => dispatch(loadQuestions(test_id)), 
     }
 }
 
