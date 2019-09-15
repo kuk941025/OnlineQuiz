@@ -1,51 +1,86 @@
 import React, { useEffect, useState } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import { connect } from 'react-redux'
-import { connectToQuestion } from '../../store/actions/testActions'
+import { connectToQuestion, loadQuestions } from '../../store/actions/testActions'
 import { button, secondaryButton } from '../css/Styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { progress_root } from '../css/Styles'
 import classNames from 'classnames'
+import Divider from '@material-ui/core/Divider'
+
 const useStyles = makeStyles(theme => ({
     button: button(theme),
     secondaryButton: button(theme),
     typoTitle: {
         fontWeight: 600,
     },
-    progress_root, 
+    progress_root,
     typoHead: {
-        marginBottom: theme.spacing(2), 
+        marginBottom: theme.spacing(2),
     },
     root: {
         display: 'flex',
-        flexDirection: 'column',    
-        minHeight: 250, 
+        flexDirection: 'column',
+        minHeight: 350,
     },
     btnMargin: {
         marginTop: 'auto'
-    }
+    },
+    divider: {
+        margin: `${theme.spacing(1)}px 0px`
+    },
+
 }))
-const TestManagement = ({ test, selected_question, connectToQuestion }) => {
+const TestManagement = ({ test, selected_question, connectToQuestion, loadQuestions, questions }) => {
     const classes = useStyles();
     const [question, setQuestion] = useState(null);
+    const [questionList, setList] = useState(null);
+    const [progress, setProgress] = useState('');
 
     useEffect(() => {
         const { current_order, id } = test;
         connectToQuestion(id, current_order);
-    }, [test.current_order]);
+    }, [test, connectToQuestion]);
 
     useEffect(() => {
         console.log(selected_question);
-        if (selected_question){
+        if (selected_question) {
             setQuestion(selected_question);
         }
-    }, [selected_question])
+    }, [selected_question]);
 
-    if (!question) {
+    useEffect(() => {
+        //Set question list.
+        if (!questions) loadQuestions(test.id);
+        else {
+            setList(questions);
+
+        }
+
+    }, [questions]);
+
+    useEffect(() => {
+        //update progress
+        if (question && questionList) {
+            const { current_order } = test;
+
+            let idx = questionList.findIndex(item => (
+                item.order === current_order
+            ));
+
+            setProgress(`${idx + 1}/${questions.length}`);
+
+        }
+    }, [question, questionList, test])
+
+
+
+    //If the question is not yet loaded.
+    if (!question || !questionList) {
         return (
-            <div className={classes.progress_root} style={{flexDirection: 'column'}}>
+            <div className={classes.progress_root} style={{ flexDirection: 'column' }}>
                 <Typography variant="body1">
                     Connecting to the question...
                 </Typography>
@@ -56,13 +91,31 @@ const TestManagement = ({ test, selected_question, connectToQuestion }) => {
     return (
         <div className={classes.root}>
             <Typography variant="h6" component="h6" align="center" className={classes.typoHead} gutterBottom>
-                Question In Progress
+                {`Question In Progress (${progress})`}
             </Typography>
             <Typography variant="body1" className={classes.typoTitle} gutterBottom>
                 {question.title}
             </Typography>
             <Typography variant="body1" >
                 {question.content}
+            </Typography>
+
+            <Divider className={classes.divider} />
+
+            <Typography variant="body1">
+                {`test_type: ${question.is_test === 0 ? `Normal` : `Test Question`}`}
+            </Typography>
+            <Typography variant="body1">
+                {`Order: ${question.order}`}
+            </Typography>
+            <Typography variant="body1">
+                {`State: ${question.state}`}
+            </Typography>
+            <Typography variant="body1">
+                {`Number of selections: ${question.selections.length}`}
+            </Typography>
+            <Typography variant="body1">
+                {`Answered: ${question.answered}`}
             </Typography>
 
             <Button fullWidth className={classNames(classes.button, classes.btnMargin)}>
@@ -74,14 +127,17 @@ const TestManagement = ({ test, selected_question, connectToQuestion }) => {
 
 
 const mapStateToProps = state => {
+    const { selected_question, questions } = state.test;
     return {
-        selected_question: state.test.selected_question,
+        selected_question,
+        questions,
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: (test_id, question_order) => dispatch(connectToQuestion(test_id, question_order)),
+        loadQuestions: (test_id) => dispatch(loadQuestions(test_id)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TestManagement)
