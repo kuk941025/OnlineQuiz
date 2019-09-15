@@ -74,7 +74,7 @@ export const getUserData = () => {
         let user;
         if (user_snap.size === 0){
             //if not found find from auths collection
-            let auths_snap = await db.doc(`auths/${uid}`).get();
+            user = await db.doc(`auths/${uid}`).get();
             
             return;
         }

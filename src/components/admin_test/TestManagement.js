@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import { connect } from 'react-redux'
 import { connectToQuestion, loadQuestions, startQuestion, nextQuestion } from '../../store/actions/testActions'
-import { button, secondaryButton } from '../css/Styles'
+import { button } from '../css/Styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -60,7 +60,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
 
         }
 
-    }, [questions]);
+    }, [questions, loadQuestions, test.id]);
 
     useEffect(() => {
         //update progress
@@ -71,7 +71,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
                 item.order === current_order
             ));
 
-            setProgress(`${idx + 1}/${questions.length}`);
+            setProgress(`${idx + 1}/${questionList.length}`);
 
         }
     }, [question, questionList, test])
@@ -80,7 +80,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
         if (question && question.state === 1 && remaining === 0) {
             const interval = 250;
             let add_value = Math.ceil(interval / (test.limit_time * 1000) * 100);
-            console.log(add_value);
+
             const setTimer = () => {
                 setRemaining(oldRemaining => {
                     if (oldRemaining >= 100) {
@@ -94,7 +94,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
 
             let timer = setInterval(setTimer, interval);
         }
-    }, [question])
+    }, [question, test.limit_time])
 
     //If the question is not yet loaded.
     if (!question || !questionList) {

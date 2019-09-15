@@ -22,7 +22,7 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user }) => {
         //connect to test after user data is loaded.
         if (user) connectToTest(test_id);
 
-    }, [connectToTest, user]);
+    }, [connectToTest, user, test_id]);
 
     useEffect(() => {
         if (test_msg !== '') {

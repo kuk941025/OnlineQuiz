@@ -37,10 +37,6 @@ const authReducer = (state = initState, action) => {
                 user: action.result
             }
 
-        case 'USER_DATA_LOADED':
-            alert("다른 위치에서 로그인되었습니다.");
-
-            return state;
 
         default:
             return state;
