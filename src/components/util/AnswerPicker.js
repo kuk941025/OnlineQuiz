@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const AnswerPicker = ({ selections }) => {
+const AnswerPicker = ({ selections, disabled }) => {
     const classes = useStyles();
     const [suggestions, setSuggestions] = useState([]);
 
@@ -76,6 +76,7 @@ const AnswerPicker = ({ selections }) => {
         return (
             <TextField
                 className={classes.textField}
+                disabled={disabled}
                 InputProps={{
                     inputRef: ref,
                     classes: {
@@ -184,6 +185,7 @@ const AnswerPicker = ({ selections }) => {
                         {selections.map((item, idx) => (
                             <FormControlLabel
                                 key={idx}
+                                disabled={disabled}
                                 control={<Radio />}
                                 value={item.title}
                                 label={item.title}
@@ -200,5 +202,6 @@ const AnswerPicker = ({ selections }) => {
 export default AnswerPicker
 
 AnswerPicker.propTypes = {
-    selections: PropTypes.array.isRequired
+    selections: PropTypes.array.isRequired,
+    disabled: PropTypes.bool.isRequired,
 }

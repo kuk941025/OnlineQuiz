@@ -9,11 +9,6 @@ import Button from '@material-ui/core/Button'
 import Grey from '@material-ui/core/colors/grey'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Divider from '@material-ui/core/Divider'
-import TextField from '@material-ui/core/TextField'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import Radio from '@material-ui/core/Radio'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import AnswerPicker from '../util/AnswerPicker'
 
@@ -32,6 +27,8 @@ const useStyles = makeStyles(theme => ({
         height: '20%',
         border: `1px solid ${Grey['300']}`,
         padding: theme.spacing(1),
+        display: 'flex',
+        flexDirection: 'column'
     },
     answerRoot: {
         height: '70%',
@@ -46,13 +43,20 @@ const useStyles = makeStyles(theme => ({
     textField: {
         margin: `${theme.spacing(1)}px 0px`
     },
-
+    progressRoot: {
+        marginTop: 'auto'
+    },
+    questionHidden: {
+        margin: 'auto',
+        color: Grey['500']
+    }
 }))
 
 const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question }) => {
     const classes = useStyles();
     const [questionList, setList] = useState([]);
     const [question, setQuestion] = useState(null);
+    const [progress, setProgress] = useState('');
 
     useEffect(() => {
         if (questions) setList(questions);
@@ -68,7 +72,18 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
     useEffect(() => {
         if (selected_question) setQuestion(selected_question);
         console.log(selected_question);
-    }, [selected_question])
+    }, [selected_question]);
+
+    useEffect(() => {
+        if (questionList) {
+            let idx = questionList.findIndex(item => (
+                item.order === test.current_order
+            ));
+
+            setProgress(`${idx + 1}/${questionList.length}`);
+        };
+
+    }, [test.current_order, questionList])
 
     if (!question) {
         return (
@@ -81,13 +96,30 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
     return (
         <div className={classes.root}>
             <div className={classes.questionRoot}>
-                <LinearProgress />
-                <Typography variant="body1" className={classes.typoTitle} gutterBottom>
-                    {question.title}
-                </Typography>
-                <Typography variant="body1">
-                    {question.content}
-                </Typography>
+                <LinearProgress variant="determinate" value={0} />
+                {question.state === 0 &&
+                    <div className={classes.questionHidden}>
+                        <Typography variant="body1" align="center">
+                            문제 비공개
+                        </Typography>
+                    </div>
+                }
+                {question.state >= 1 &&
+                    <React.Fragment>
+                        <Typography variant="body1" className={classes.typoTitle} gutterBottom>
+                            {question.title}
+                        </Typography>
+                        <Typography variant="body1">
+                            {question.content}
+                        </Typography>
+                    </React.Fragment>
+                }
+
+                <div className={classes.progressRoot}>
+                    <Typography variant="body1" align="right">
+                        {progress}
+                    </Typography>
+                </div>
             </div>
             <Divider className={classes.divider} />
             <div className={classes.answerRoot}>
@@ -95,7 +127,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
                     정답 선택
                 </Typography>
 
-                <AnswerPicker selections={question.selections} />
+                <AnswerPicker selections={question.selections} disabled={question.state === 1 ? false : true} />
             </div>
             <Button className={classes.button} fullWidth>
                 제출

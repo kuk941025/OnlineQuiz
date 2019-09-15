@@ -44,7 +44,7 @@ export const connectToTest = (test_id) => {
                 })
             }).then(() => {
                 db.doc(`tests/${test_id}/users/${phone}`).set({
-                    ...state.auth.user, 
+                    ...state.auth.user,
                     joined_at: new Date(),
                 });
                 dispatch({ type: 'USER_TEST_TRANSACTION_COMPLETE', test_snap });
@@ -59,7 +59,7 @@ export const disconnectToServer = () => {
         const state = getState();
         if (state.user.test_snap) state.user.test_snap();
 
-        dispatch({type: 'DISCONNECTED_FROM_TEST'})
+        dispatch({ type: 'DISCONNECTED_FROM_TEST' })
     }
 }
 
@@ -72,14 +72,14 @@ export const loadQuestions = (test_id) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
 
-        let question_snap = await db.collection(`tests/${test_id}/questions`).get();
+        let question_snap = await db.collection(`tests/${test_id}/questions`).orderBy('order').get();
 
         let result = [];
-        for (let question_doc of question_snap.docs){
-            result.push({id: question_doc.id, ...question_doc.data()})
+        for (let question_doc of question_snap.docs) {
+            result.push({ id: question_doc.id, ...question_doc.data() })
         };
 
-        dispatch({type: 'USER_QUESTIONS_LOADED', result})
+        dispatch({ type: 'USER_QUESTIONS_LOADED', result })
     }
 }
 
@@ -93,14 +93,14 @@ export const connectToQuestion = (test) => {
         console.log(test);
 
         let question_snap = db.collection(`tests/${id}/questions`).where('order', '==', current_order).limit(1).onSnapshot(snap => {
-            
-            if (snap.size === 1){
+
+            if (snap.size === 1) {
                 let doc = snap.docs[0];
                 console.log(doc.data());
-                dispatch({type: 'CONNECTED_TO_QUESTION', result: {id: doc.id, ...doc.data()}})
+                dispatch({ type: 'CONNECTED_TO_QUESTION', result: { id: doc.id, ...doc.data() } })
             }
         });
 
-        dispatch({type: 'USER_CONNECTION_TO_QUESTION', question_snap});
+        dispatch({ type: 'USER_CONNECTION_TO_QUESTION', question_snap });
     }
 }
