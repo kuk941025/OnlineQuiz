@@ -5,7 +5,9 @@ const initState = {
     test_snap: null,
     questions: null,
     question_snap: null,
-    selected_question: null,   
+    selected_question: null,
+    answer: null,
+    answer_snap: null, 
 }
 
 const userReducer = (state = initState, action) => {
@@ -64,7 +66,25 @@ const userReducer = (state = initState, action) => {
 
         case 'ANSWER_SUBMITED':
             return state;
-            
+
+        case 'INIT_ANSWER':
+            return {
+                ...state,
+                answer: null, 
+                answer_snap: null
+            }
+
+        case 'CONNECTED_TO_ANSWER':
+            return {
+                ...state,
+                answer: action.answer,
+            }
+
+        case 'ANSWER_SNAPSHOT':
+            return {
+                ...state,
+                answer_snap: action.answer_snap
+            }
         default:
             return state;
     }

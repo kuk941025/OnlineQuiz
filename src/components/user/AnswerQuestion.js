@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { connectToQuestion, submitAnswer } from '../../store/actions/userActions'
+import { connectToQuestion, submitAnswer, disconnectToQuestion } from '../../store/actions/userActions'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
 import PropTypes from 'prop-types'
@@ -12,7 +12,7 @@ import Divider from '@material-ui/core/Divider'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import AnswerPicker from '../util/AnswerPicker'
 import moment from 'moment'
-
+import AnswerCompleted from './AnswerCompleted'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
     secondaryButton: secondaryButton(theme),
 }))
 
-const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question, submitAnswer }) => {
+const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question, submitAnswer, disconnectToQuestion }) => {
     const classes = useStyles();
     const [questionList, setList] = useState([]);
     const [question, setQuestion] = useState(null);
@@ -74,6 +74,10 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
 
     useEffect(() => {
         connectToQuestion(test);
+
+        return () => {
+            disconnectToQuestion();
+        }
     }, [test.current_order]);
 
     useEffect(() => {
@@ -94,7 +98,6 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                     const setTimer = () => {
                         setRemaining(oldRemaining => {
                             if (oldRemaining >= 100) {
-                                console.log('called')
                                 clearInterval(t);
                                 setPicker(false);
                                 setLocalTimer(null);
@@ -227,7 +230,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                 </React.Fragment>
             ) : (
                     <div className={classes.answerRoot}>
-
+                        <AnswerCompleted question={question} test={test}/>
                     </div>
                 )}
 
@@ -248,7 +251,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: test => dispatch(connectToQuestion(test)),
-        submitAnswer: (test_id, question_id, answer, time) => dispatch(submitAnswer(test_id, question_id, answer, time))
+        submitAnswer: (test_id, question_id, answer, time) => dispatch(submitAnswer(test_id, question_id, answer, time)),
+        disconnectToQuestion: () => dispatch(disconnectToQuestion()), 
     }
 }
 

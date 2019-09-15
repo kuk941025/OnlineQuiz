@@ -229,11 +229,12 @@ export const connectToQuestion = (test_id, question_order) => {
 export const startQuestion = (test, question_id) => {
     return async (dispatch, getState) => {
 
-        const { id, limit_time } = test;
-        axios.post(`https://onlinequiz-8c98f.appspot.com/start_question`, {
+        const { id, limit_time, users_in } = test;
+        axios.post(`http://localhost:8080/start_question`, {
             test_id: id,
             time_limit: limit_time,
-            question_id
+            question_id,
+            users_in
         });
 
         dispatch({ type: 'QUESTION_STARTED' })
@@ -243,7 +244,6 @@ export const startQuestion = (test, question_id) => {
 export const initTest = (test) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
-
         let testRef = db.doc(`tests/${test.id}`);
 
         let batch = db.batch();

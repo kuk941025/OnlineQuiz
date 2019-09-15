@@ -115,8 +115,8 @@ export const submitAnswer = (test_id, question_id, answer, time) => {
 
         let questionRef = db.doc(`tests/${test_id}/questions/${question_id}`)
 
-        dispatch({ type: 'ANSWER_SUBMITED' });
-        return db.runTransaction(transaction => {
+
+        db.runTransaction(transaction => {
             return transaction.get(questionRef).then(doc => {
                 let answered = doc.data().answered + 1;
 
@@ -124,6 +124,50 @@ export const submitAnswer = (test_id, question_id, answer, time) => {
             })
         })
 
+        dispatch({ type: 'ANSWER_SUBMITED' });
+    }
+}
 
+export const disconnectToQuestion = () => {
+    return (dispatch, getState) => {
+        const state = getState().user;
+
+        if (state.question_snap) state.question_snap();
+    }
+}
+
+export const connectToAnswer = (test_id, question_id) => {
+    return (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+        const state = getState();
+        const user = state.user;
+        const auth = state.auth.user;
+
+        if (user.answer_snap) user.answer_snap();
+
+
+        console.log('called');
+        console.log(test_id);
+        let answer_snap = db.doc(`tests/${test_id}/questions/${question_id}/answers/${auth.phone}`).onSnapshot(doc => {
+            if (doc.exists) {
+                let data = doc.data();
+                console.log(data);
+                if (data.rank) {
+                    dispatch({ type: 'CONNECTED_TO_ANSWER', answer: data });
+                    answer_snap();
+                }
+            }
+        });
+
+        dispatch({ type: 'ANSWER_SNAPSHOT', answer_snap })
+    }
+}
+
+export const initAnswer = () => {
+    return (dispatch, getState) => {
+        const state = getState().user;
+
+        if (state.answer_snap) state.answer_snap();
+        dispatch({ type: 'INIT_ANSWER' });
     }
 }
