@@ -90,17 +90,28 @@ export const connectToQuestion = (test) => {
         const { current_order, id } = test;
 
         if (state.user.question_snap) state.user.question_snap();
-        console.log(test);
 
         let question_snap = db.collection(`tests/${id}/questions`).where('order', '==', current_order).limit(1).onSnapshot(snap => {
 
             if (snap.size === 1) {
                 let doc = snap.docs[0];
-                console.log(doc.data());
                 dispatch({ type: 'CONNECTED_TO_QUESTION', result: { id: doc.id, ...doc.data() } })
             }
         });
 
         dispatch({ type: 'USER_CONNECTION_TO_QUESTION', question_snap });
+    }
+}
+
+export const submitAnswer = (test_id, question_id, answer) => {
+    return (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+        const auth = getState().auth;
+        db.doc(`tests/${test_id}/questions/${question_id}/answers/${auth.user.phone}`).set({
+            created_at: new Date(),
+            answer, 
+        });
+
+        dispatch({type: 'ANSWER_SUBMITED'});
     }
 }

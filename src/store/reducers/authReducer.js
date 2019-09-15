@@ -36,7 +36,7 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 user: action.result
             }
-
+        
 
         default:
             return state;

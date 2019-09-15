@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const AnswerPicker = ({ selections, disabled }) => {
+const AnswerPicker = ({ selections, disabled, onChange, onAuto, onSubmit }) => {
     const classes = useStyles();
     const [suggestions, setSuggestions] = useState([]);
 
@@ -69,6 +69,10 @@ const AnswerPicker = ({ selections, disabled }) => {
         setSuggestions(list);
 
     }, [selections]);
+
+    const handleChange = input => {
+        onAuto(input)
+    }
 
     const renderInput = inputProps => {
         const { InputProps, classes, ref, ...other } = inputProps;
@@ -129,55 +133,60 @@ const AnswerPicker = ({ selections, disabled }) => {
             });
     }
 
+
     return (
         <React.Fragment>
-            <Downshift>
-                {({
-                    getInputProps,
-                    getItemProps,
-                    getLabelProps,
-                    getMenuProps,
-                    highlightedIndex,
-                    inputValue,
-                    isOpen,
-                    selectedItem,
-                }) => {
-                    const { onBlur, onFocus, ...inputProps } = getInputProps({
-                        placeholder: '이름을 입력해주세요. (성없이도 가능)',
-                    });
+            <form onSubmit={onSubmit}>
 
-                    return (
-                        <div className={classes.container}>
-                            {renderInput({
-                                fullWidth: true,
-                                classes,
-                                label: '정답입력',
-                                InputLabelProps: getLabelProps({ shrink: true }),
-                                InputProps: { onBlur, onFocus },
-                                inputProps,
-                            })}
 
-                            <div {...getMenuProps()}>
-                                {isOpen ? (
-                                    <Paper className={classes.paper} square>
-                                        {getSuggestions(inputValue).map((suggestion, index) =>
-                                            renderSuggestion({
-                                                suggestion,
-                                                index,
-                                                itemProps: getItemProps({ item: suggestion.label }),
-                                                highlightedIndex,
-                                                selectedItem,
-                                            }),
-                                        )}
-                                    </Paper>
-                                ) : null}
+                <Downshift>
+                    {({
+                        getInputProps,
+                        getItemProps,
+                        getLabelProps,
+                        getMenuProps,
+                        highlightedIndex,
+                        inputValue,
+                        isOpen,
+                        selectedItem,
+                    }) => {
+                        const { onBlur, onFocus, ...inputProps } = getInputProps({
+                            placeholder: '이름을 입력해주세요. (성없이도 가능)',
+                        });
+                        handleChange(inputValue);
+                        inputValue="asd"
+                        return (
+                            <div className={classes.container}>
+                                {renderInput({
+                                    fullWidth: true,
+                                    classes,
+                                    label: '정답입력',
+                                    InputLabelProps: getLabelProps({ shrink: true }),
+                                    InputProps: { onBlur, onFocus },
+                                    inputProps,
+                                })}
+
+                                <div {...getMenuProps()}>
+                                    {isOpen ? (
+                                        <Paper className={classes.paper} square>
+                                            {getSuggestions(inputValue).map((suggestion, index) =>
+                                                renderSuggestion({
+                                                    suggestion,
+                                                    index,
+                                                    itemProps: getItemProps({ item: suggestion.label }),
+                                                    highlightedIndex,
+                                                    selectedItem,
+                                                }),
+                                            )}
+                                        </Paper>
+                                    ) : null}
+                                </div>
                             </div>
-                        </div>
-                    );
+                        );
 
-                }}
-            </Downshift>
-
+                    }}
+                </Downshift>
+            </form>
 
             <div className={classes.formControl}>
                 <FormControl component="fieldset" >
@@ -189,6 +198,7 @@ const AnswerPicker = ({ selections, disabled }) => {
                                 control={<Radio />}
                                 value={item.title}
                                 label={item.title}
+                                onChange={onChange}
                             />
                         ))}
                     </RadioGroup>
@@ -204,4 +214,5 @@ export default AnswerPicker
 AnswerPicker.propTypes = {
     selections: PropTypes.array.isRequired,
     disabled: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired
 }

@@ -61,6 +61,10 @@ const userReducer = (state = initState, action) => {
                 ...state,
                 selected_question: action.result, 
             }
+
+        case 'ANSWER_SUBMITED':
+            return state;
+            
         default:
             return state;
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { connectToQuestion } from '../../store/actions/userActions'
+import { connectToQuestion, submitAnswer } from '../../store/actions/userActions'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
 import PropTypes from 'prop-types'
@@ -52,21 +52,21 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question }) => {
+const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question, submitAnswer }) => {
     const classes = useStyles();
     const [questionList, setList] = useState([]);
     const [question, setQuestion] = useState(null);
     const [progress, setProgress] = useState('');
+    const [answer, setAnswer] = useState('');
+    const [radio, setRadio] = useState('');
 
     useEffect(() => {
         if (questions) setList(questions);
 
-        console.log(questions);
     }, [questions]);
 
     useEffect(() => {
         connectToQuestion(test);
-        console.log('called`');
     }, [test.current_order]);
 
     useEffect(() => {
@@ -84,6 +84,36 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
         };
 
     }, [test.current_order, questionList])
+
+    const handleChange = e => {
+        setRadio(e.target.value);
+    }
+    const handleAutoComplete = input => {
+
+        setAnswer(input);
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        let input = answer;
+        if (radio !== '') input = radio;
+
+        if (input === '') {
+            alert("답을 입력해주세요.");
+            return;
+        }
+        
+        let ans = question.selections.find(item => (
+            item.title === input || item.subtitle === input
+        ));
+
+        console.log(answer)
+        console.log(ans);
+        if (ans) {
+            submitAnswer(test.id, question.id, ans.title);
+        }
+        else alert("잘못된 입력입니다.");
+    }
 
     if (!question) {
         return (
@@ -122,16 +152,26 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question 
                 </div>
             </div>
             <Divider className={classes.divider} />
+
             <div className={classes.answerRoot}>
                 <Typography variant="body1" className={classes.typoTitle} gutterBottom>
                     정답 선택
-                </Typography>
+                    </Typography>
 
-                <AnswerPicker selections={question.selections} disabled={question.state === 1 ? false : true} />
+                <AnswerPicker
+                    onSubmit={handleSubmit}
+                    answer={answer}
+                    onChange={handleChange}
+                    onAuto={handleAutoComplete}
+                    selections={question.selections}
+                    disabled={question.state >= 1 ? false : true} />
+
             </div>
-            <Button className={classes.button} fullWidth>
+            <Button className={classes.button} fullWidth onClick={handleSubmit}>
                 제출
             </Button>
+
+
         </div>
     )
 }
@@ -147,6 +187,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: test => dispatch(connectToQuestion(test)),
+        submitAnswer: (test_id, question_id, answer) => dispatch(submitAnswer(test_id, question_id, answer))
     }
 }
 
