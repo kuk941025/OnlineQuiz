@@ -50,6 +50,7 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions 
         loadQuestions(test_id);
     }, [loadQuestions]);
 
+    console.log(testData);
     return (
         <React.Fragment>
             {loading ? (

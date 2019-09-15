@@ -41,7 +41,7 @@ const AnswerCompleted = ({ test, question, connectToAnswer, answer }) => {
                     <React.Fragment>
                         {answerData ? (
                             <div>
-                                <Typography variant="body1">
+                                <Typography variant="body1" align="center">
                                     {`순위: ${answer.rank}위`}
                                 </Typography>
                             </div>
@@ -53,10 +53,10 @@ const AnswerCompleted = ({ test, question, connectToAnswer, answer }) => {
                     </React.Fragment>
                 ) : (
                         <React.Fragment>
-                            <Typography variant="body1">
+                            <Typography variant="body1" align="center">
                                 투표가 진행중입니다.
                             </Typography>
-                            <Typography variant="body1" >
+                            <Typography variant="body1" align="center">
                                 {`남은 인원: ${test.users_in - question.answered}명`}
                             </Typography>
                         </React.Fragment>

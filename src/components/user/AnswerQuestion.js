@@ -19,7 +19,9 @@ const useStyles = makeStyles(theme => ({
         height: 'calc(100vh - 64px)',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        overflowY: 'auto',
+        minHeight: 600,
     },
     typoTitle: {
         fontWeight: 600,
@@ -33,7 +35,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column'
     },
     answerRoot: {
-        height: '70%',
+        height: '65%',
         border: `1px solid ${Grey['300']}`,
         padding: theme.spacing(1),
     },
@@ -86,10 +88,13 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
 
             console.log(selected_question);
             const { state } = selected_question;
-            if (state === 0) {
+            if (state == 0) {
                 setPicker(true);
             }
-            else if (state === 1) {
+            else setPicker(false);
+
+
+            if (state === 1) {
                 //if started accepting response, run timer.
                 const interval = 250;
                 let add_value = Math.ceil(interval / (test.limit_time * 1000) * 100);
@@ -111,10 +116,8 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
 
                     //start recording time
                     setStarted(moment(new Date()));
+                    setPicker(true);
                 }
-            }
-            else if (selected_question.state === 2) {
-                setPicker(false);
             }
 
         }
@@ -221,16 +224,18 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                             disabled={question.state >= 1 ? false : true} />
 
                     </div>
-                    <Button
-                        className={question.state >= 1 ? classes.button : classes.secondaryButton}
-                        fullWidth onClick={handleSubmit}
-                        disabled={question.state >= 1 ? false : true}>
-                        제출
-                    </Button>
+                    <div>
+                        <Button
+                            className={question.state >= 1 ? classes.button : classes.secondaryButton}
+                            fullWidth onClick={handleSubmit}
+                            disabled={question.state >= 1 ? false : true}>
+                            제출
+                        </Button>
+                    </div>
                 </React.Fragment>
             ) : (
                     <div className={classes.answerRoot}>
-                        <AnswerCompleted question={question} test={test}/>
+                        <AnswerCompleted question={question} test={test} />
                     </div>
                 )}
 
@@ -252,7 +257,7 @@ const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: test => dispatch(connectToQuestion(test)),
         submitAnswer: (test_id, question_id, answer, time) => dispatch(submitAnswer(test_id, question_id, answer, time)),
-        disconnectToQuestion: () => dispatch(disconnectToQuestion()), 
+        disconnectToQuestion: () => dispatch(disconnectToQuestion()),
     }
 }
 
