@@ -9,6 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { progress_root } from '../css/Styles'
 import classNames from 'classnames'
 import Divider from '@material-ui/core/Divider'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 const useStyles = makeStyles(theme => ({
     button: button(theme),
@@ -38,6 +39,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
     const [question, setQuestion] = useState(null);
     const [questionList, setList] = useState(null);
     const [progress, setProgress] = useState('');
+    const [remaining, setRemaining] = useState(0);
 
     useEffect(() => {
         const { current_order, id } = test;
@@ -45,7 +47,6 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
     }, [test, connectToQuestion]);
 
     useEffect(() => {
-        console.log(selected_question);
         if (selected_question) {
             setQuestion(selected_question);
         }
@@ -75,7 +76,26 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
         }
     }, [question, questionList, test])
 
+    useEffect(() => {
+        if (question && question.state === 1 && remaining === 0) {
+            const interval = 250;
+            let add_value = Math.ceil(interval / (test.limit_time * 1000) * 100);
+            console.log(add_value);
+            const setTimer = () => {
+                setRemaining(oldRemaining => {
+                    if (oldRemaining >= 100) {
+                        clearInterval(timer);
+                        return 0;
+                    }
 
+                    return oldRemaining + add_value;
+                })
+            }
+
+            console.log('called');
+            let timer = setInterval(setTimer, interval);
+        }
+    }, [question])
 
     //If the question is not yet loaded.
     if (!question || !questionList) {
@@ -88,6 +108,8 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
             </div>
         )
     }
+
+
     return (
         <div className={classes.root}>
             <Typography variant="h6" component="h6" align="center" className={classes.typoHead} gutterBottom>
@@ -118,9 +140,17 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
                 {`Answered: ${question.answered}`}
             </Typography>
 
-            <Button fullWidth className={classNames(classes.button, classes.btnMargin)}>
-                Start
-            </Button>
+            <div className={classes.btnMargin}>
+                {question.state === 0 &&
+                    <Button fullWidth className={classNames(classes.button)}>
+                        Start
+                </Button>
+                }
+                {question.state === 1 &&
+                    <LinearProgress color="primary" variant="determinate" value={remaining} />
+                }
+            </div>
+
         </div>
     )
 }
