@@ -9,6 +9,7 @@ import { loadTest, updateTestState } from '../../store/actions/testActions'
 import Typography from '@material-ui/core/Typography'
 import TestReady from './TestReady'
 import TestManagement from './TestManagement'
+import TestComplete from './TestComplete'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -62,6 +63,7 @@ const AdminTestLayout = ({ match, loadTest, test_result, test, test_order, updat
 
                     {testData &&
                         <React.Fragment>
+                            {testOrder === -2 && <TestComplete test={testData} />}
                             {testOrder === -1 && <TestPreparation test={testData} test_id={test_id} onNext={handleNext} />}
                             {testOrder === 0 && <TestReady test={testData} />}
                             {testOrder > 0 && <TestManagement test={testData} />}

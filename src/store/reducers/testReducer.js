@@ -114,6 +114,9 @@ const testReducer = (state = initState, action) => {
         case 'QUESTION_STARTED':
             return state;
 
+        case 'TEST_INITALIZED':
+            return state;
+            
         default:
             return state;
     }

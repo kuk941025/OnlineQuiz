@@ -68,8 +68,12 @@ export const updateTest = (id, test) => {
     return async (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
 
+        const { limit_num, limit_time, ...others } = test;
+
         await db.doc(`tests/${id}`).update({
-            ...test,
+            ...others,
+            limit_num: Number(limit_num),
+            limit_time: Number(limit_time),
         });
         console.log('updated');
 
@@ -233,5 +237,37 @@ export const startQuestion = (test, question_id) => {
         });
 
         dispatch({ type: 'QUESTION_STARTED' })
+    }
+}
+
+export const initTest = (test) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const db = getFirestore();
+
+        let testRef = db.doc(`tests/${test.id}`);
+
+        let batch = db.batch();
+        batch.update(testRef, {
+            users_in: 0,
+            current_order: -1,
+        });
+
+        let question_snap = await testRef.collection('questions').get();
+        let questions = [];
+
+        for (let question_doc of question_snap.docs) {
+            questions.push(question_doc.id);
+        };
+
+        for (let question of questions) {
+            batch.update(db.doc(`tests/${test.id}/questions/${question}`), {
+                answered: 0,
+                state: 0,
+            })
+        };
+
+        await batch.commit();
+
+        dispatch({ type: 'TEST_INITALIZED' })
     }
 }
