@@ -4,13 +4,15 @@ import { connectToQuestion, submitAnswer } from '../../store/actions/userActions
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
 import PropTypes from 'prop-types'
-import { button, progress_root } from '../css/Styles'
+import { button, progress_root, secondaryButton } from '../css/Styles'
 import Button from '@material-ui/core/Button'
 import Grey from '@material-ui/core/colors/grey'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Divider from '@material-ui/core/Divider'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import AnswerPicker from '../util/AnswerPicker'
+import moment from 'moment'
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -49,7 +51,8 @@ const useStyles = makeStyles(theme => ({
     questionHidden: {
         margin: 'auto',
         color: Grey['500']
-    }
+    },
+    secondaryButton: secondaryButton(theme),
 }))
 
 const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question, submitAnswer }) => {
@@ -59,6 +62,10 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
     const [progress, setProgress] = useState('');
     const [answer, setAnswer] = useState('');
     const [radio, setRadio] = useState('');
+    const [remaining, setRemaining] = useState(0);
+    const [showPicker, setPicker] = useState(true);
+    const [startedTime, setStarted] = useState(null);
+    const [timer, setLocalTimer] = useState(null);
 
     useEffect(() => {
         if (questions) setList(questions);
@@ -70,8 +77,44 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
     }, [test.current_order]);
 
     useEffect(() => {
-        if (selected_question) setQuestion(selected_question);
-        console.log(selected_question);
+        if (selected_question) {
+            setQuestion(selected_question);
+
+            console.log(selected_question);
+            const { state } = selected_question;
+            if (state === 0) {
+                setPicker(true);
+            }
+            else if (state === 1) {
+                //if started accepting response, run timer.
+                const interval = 250;
+                let add_value = Math.ceil(interval / (test.limit_time * 1000) * 100);
+
+                if (!timer) {
+                    const setTimer = () => {
+                        setRemaining(oldRemaining => {
+                            if (oldRemaining >= 100) {
+                                console.log('called')
+                                clearInterval(t);
+                                setPicker(false);
+                                setLocalTimer(null);
+                                return 0;
+                            }
+                            return oldRemaining + add_value;
+                        })
+                    };
+                    let t = setInterval(setTimer, interval);
+                    setLocalTimer(t);
+
+                    //start recording time
+                    setStarted(moment(new Date()));
+                }
+            }
+            else if (selected_question.state === 2) {
+                setPicker(false);
+            }
+
+        }
     }, [selected_question]);
 
     useEffect(() => {
@@ -85,11 +128,12 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
 
     }, [test.current_order, questionList])
 
+
+
     const handleChange = e => {
         setRadio(e.target.value);
     }
     const handleAutoComplete = input => {
-
         setAnswer(input);
     }
 
@@ -102,15 +146,18 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
             alert("답을 입력해주세요.");
             return;
         }
-        
+
         let ans = question.selections.find(item => (
             item.title === input || item.subtitle === input
         ));
 
-        console.log(answer)
-        console.log(ans);
         if (ans) {
-            submitAnswer(test.id, question.id, ans.title);
+            let curTime = moment(new Date());
+
+            let diff = curTime.diff(startedTime, 'milliseconds');
+            console.log(diff);
+            submitAnswer(test.id, question.id, ans.title, diff);
+            setPicker(false);
         }
         else alert("잘못된 입력입니다.");
     }
@@ -126,7 +173,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
     return (
         <div className={classes.root}>
             <div className={classes.questionRoot}>
-                <LinearProgress variant="determinate" value={0} />
+                <LinearProgress variant="determinate" value={remaining} />
                 {question.state === 0 &&
                     <div className={classes.questionHidden}>
                         <Typography variant="body1" align="center">
@@ -153,23 +200,37 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
             </div>
             <Divider className={classes.divider} />
 
-            <div className={classes.answerRoot}>
-                <Typography variant="body1" className={classes.typoTitle} gutterBottom>
-                    정답 선택
-                    </Typography>
 
-                <AnswerPicker
-                    onSubmit={handleSubmit}
-                    answer={answer}
-                    onChange={handleChange}
-                    onAuto={handleAutoComplete}
-                    selections={question.selections}
-                    disabled={question.state >= 1 ? false : true} />
+            {/* Picker */}
+            {showPicker ? (
+                <React.Fragment>
+                    <div className={classes.answerRoot}>
+                        <Typography variant="body1" className={classes.typoTitle} gutterBottom>
+                            정답 선택
+                        </Typography>
 
-            </div>
-            <Button className={classes.button} fullWidth onClick={handleSubmit}>
-                제출
-            </Button>
+                        <AnswerPicker
+                            onSubmit={handleSubmit}
+                            answer={answer}
+                            onChange={handleChange}
+                            onAuto={handleAutoComplete}
+                            selections={question.selections}
+                            disabled={question.state >= 1 ? false : true} />
+
+                    </div>
+                    <Button
+                        className={question.state >= 1 ? classes.button : classes.secondaryButton}
+                        fullWidth onClick={handleSubmit}
+                        disabled={question.state >= 1 ? false : true}>
+                        제출
+                    </Button>
+                </React.Fragment>
+            ) : (
+                    <div className={classes.answerRoot}>
+
+                    </div>
+                )}
+
 
 
         </div>
@@ -187,7 +248,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: test => dispatch(connectToQuestion(test)),
-        submitAnswer: (test_id, question_id, answer) => dispatch(submitAnswer(test_id, question_id, answer))
+        submitAnswer: (test_id, question_id, answer, time) => dispatch(submitAnswer(test_id, question_id, answer, time))
     }
 }
 

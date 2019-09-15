@@ -31,7 +31,6 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions 
 
     useEffect(() => {
         if (test_msg !== '') {
-            console.log(test);
             if (test_msg.startsWith('SUCCESS')) {
                 setData(test);
             }

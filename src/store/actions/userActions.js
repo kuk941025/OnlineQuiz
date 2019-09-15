@@ -103,15 +103,27 @@ export const connectToQuestion = (test) => {
     }
 }
 
-export const submitAnswer = (test_id, question_id, answer) => {
+export const submitAnswer = (test_id, question_id, answer, time) => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
         const auth = getState().auth;
         db.doc(`tests/${test_id}/questions/${question_id}/answers/${auth.user.phone}`).set({
             created_at: new Date(),
-            answer, 
+            answer,
+            time
         });
 
-        dispatch({type: 'ANSWER_SUBMITED'});
+        let questionRef = db.doc(`tests/${test_id}/questions/${question_id}`)
+
+        dispatch({ type: 'ANSWER_SUBMITED' });
+        return db.runTransaction(transaction => {
+            return transaction.get(questionRef).then(doc => {
+                let answered = doc.data().answered + 1;
+
+                transaction.update(questionRef, { answered });
+            })
+        })
+
+
     }
 }

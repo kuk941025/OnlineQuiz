@@ -85,6 +85,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
                 setRemaining(oldRemaining => {
                     if (oldRemaining >= 100) {
                         clearInterval(timer);
+                    
                         return 0;
                     }
 

@@ -154,7 +154,7 @@ const AnswerPicker = ({ selections, disabled, onChange, onAuto, onSubmit }) => {
                             placeholder: '이름을 입력해주세요. (성없이도 가능)',
                         });
                         handleChange(inputValue);
-                        inputValue="asd"
+
                         return (
                             <div className={classes.container}>
                                 {renderInput({
