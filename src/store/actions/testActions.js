@@ -198,7 +198,12 @@ export const nextQuestion = (test) => {
                 current_order: next_idx >= 0 ? questions[next_idx].order : next_idx,
             });
 
-            console.log(next_idx >= 0 ? questions[next_idx].order : next_idx);
+
+            if (next_idx === 0) {
+                axios.post(`${Server_URL}/start_test`, { test_id: test.id });
+            }
+
+            // console.log(next_idx >= 0 ? questions[next_idx].order : next_idx);
         }
 
         dispatch({ type: 'NEXT_QUESTION' });
@@ -230,7 +235,7 @@ export const startQuestion = (test, question_id) => {
     return async (dispatch, getState) => {
 
         const { id, limit_time, users_in } = test;
-        axios.post(`https://onlinequiz-8c98f.appspot.com/start_question`, {
+        axios.post(`${Server_URL}/start_question`, {
             test_id: id,
             time_limit: limit_time,
             question_id,
@@ -242,31 +247,10 @@ export const startQuestion = (test, question_id) => {
 }
 
 export const initTest = (test) => {
-    return async (dispatch, getState, { getFirestore }) => {
-        const db = getFirestore();
-        let testRef = db.doc(`tests/${test.id}`);
-
-        let batch = db.batch();
-        batch.update(testRef, {
-            users_in: 0,
-            current_order: -1,
-        });
-
-        let question_snap = await testRef.collection('questions').get();
-        let questions = [];
-
-        for (let question_doc of question_snap.docs) {
-            questions.push(question_doc.id);
-        };
-
-        for (let question of questions) {
-            batch.update(db.doc(`tests/${test.id}/questions/${question}`), {
-                answered: 0,
-                state: 0,
-            })
-        };
-
-        await batch.commit();
+    return async (dispatch, getState) => {
+        axios.post(`${Server_URL}/reset_test`, {
+            test_id: test.id,
+        })
 
         dispatch({ type: 'TEST_INITALIZED' })
     }
