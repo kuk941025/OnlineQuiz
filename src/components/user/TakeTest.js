@@ -8,6 +8,8 @@ import { progress_root } from '../css/Styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Typography from '@material-ui/core/Typography'
 import AnswerQuestion from './AnswerQuestion'
+import TestCompleted from './TestCompleted'
+import { Redirect } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     progress_root,
@@ -23,7 +25,7 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions 
     useEffect(() => {
         //connect to test after user data is loaded.
         if (user) connectToTest(test_id);
-        
+
         return () => {
             disconnectToServer();
         }
@@ -46,11 +48,11 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions 
     }, [test, test_msg]);
 
     useEffect(() => {
-        console.log('called')
         loadQuestions(test_id);
     }, [loadQuestions]);
 
-    console.log(testData);
+
+    if (testData && testData.current_order === -1) return <Redirect to="/join" />
     return (
         <React.Fragment>
             {loading ? (
@@ -64,6 +66,7 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions 
                         </Typography>
                         {test &&
                             <React.Fragment>
+                                {test.current_order === -2 && <TestCompleted />}
                                 {test.current_order === 0 && <TestReady test={testData} />}
                                 {test.current_order > 0 && <AnswerQuestion test={testData} />}
                             </React.Fragment>
@@ -88,7 +91,7 @@ const mapDispatchToProps = dispatch => {
     return {
         connectToTest: (test_id) => dispatch(connectToTest(test_id)),
         initUser: () => dispatch(initUser()),
-        loadQuestions: (test_id) => dispatch(loadQuestions(test_id)), 
+        loadQuestions: (test_id) => dispatch(loadQuestions(test_id)),
     }
 }
 
