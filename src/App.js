@@ -29,7 +29,7 @@ function App() {
         </Container>
 
         <Switch>
-          <Route path="/results/:test_id/:question_id" component={Result} />
+          <Route path="/results/:test_id/:result_id" component={Result} />
           <Route path="/results/:test_id" component={ResultList} />
         </Switch>
 
