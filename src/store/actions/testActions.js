@@ -200,7 +200,7 @@ export const nextQuestion = (test) => {
 
 
             if (next_idx === 0) {
-                axios.post(`${Server_URL}/start_test`, { test_id: test.id });
+                await axios.post(`${Server_URL}/start_test`, { test_id: test.id });
             }
 
             // console.log(next_idx >= 0 ? questions[next_idx].order : next_idx);
@@ -235,7 +235,7 @@ export const startQuestion = (test, question_id) => {
     return async (dispatch, getState) => {
 
         const { id, limit_time, users_in } = test;
-        axios.post(`${Server_URL}/start_question`, {
+        await axios.post(`${Server_URL}/start_question`, {
             test_id: id,
             time_limit: limit_time,
             question_id,
@@ -248,10 +248,20 @@ export const startQuestion = (test, question_id) => {
 
 export const initTest = (test) => {
     return async (dispatch, getState) => {
-        axios.post(`${Server_URL}/reset_test`, {
+        await axios.post(`${Server_URL}/reset_test`, {
             test_id: test.id,
         })
 
         dispatch({ type: 'TEST_INITALIZED' })
+    }
+}
+
+export const analyzeTest = test => {
+    return async (dispatch, getState) => {
+        await axios.post(`${Server_URL}/analyze_result`, {
+            test_id: test.id
+        });
+
+        dispatch({ type: 'TEST_ANALYZED' });
     }
 }

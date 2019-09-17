@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     },
     progress_root
 }))
-const AnswerCompleted = ({ test, question, connectToAnswer, answer }) => {
+const AnswerCompleted = ({ test, question, connectToAnswer, answer, time }) => {
     const classes = useStyles();
     const [answerData, setAnswer] = useState(null);
 
@@ -43,6 +43,9 @@ const AnswerCompleted = ({ test, question, connectToAnswer, answer }) => {
                             <div>
                                 <Typography variant="body1" align="center">
                                     {`순위: ${answer.rank}위`}
+                                </Typography>
+                                <Typography variant="body1" color="primary" align="center">
+                                    {`${time/1000}초`}
                                 </Typography>
                             </div>
                         ) : (

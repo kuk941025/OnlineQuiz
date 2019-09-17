@@ -68,6 +68,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
     const [showPicker, setPicker] = useState(true);
     const [startedTime, setStarted] = useState(null);
     const [timer, setLocalTimer] = useState(null);
+    const [elaspedTime, setElasped] = useState('0');
 
     useEffect(() => {
         if (questions) setList(questions);
@@ -161,8 +162,8 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
             let curTime = moment(new Date());
 
             let diff = curTime.diff(startedTime, 'milliseconds');
-            console.log(diff);
             submitAnswer(test.id, question.id, ans.title, diff);
+            setElasped(diff);
             setPicker(false);
         }
         else alert("잘못된 입력입니다.");
@@ -235,7 +236,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                 </React.Fragment>
             ) : (
                     <div className={classes.answerRoot}>
-                        <AnswerCompleted question={question} test={test} />
+                        <AnswerCompleted question={question} test={test} time={elaspedTime} />
                     </div>
                 )}
 

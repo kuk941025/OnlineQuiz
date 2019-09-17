@@ -66,7 +66,7 @@ const TakeTest = ({ test_id, connectToTest, test, test_msg, user, loadQuestions 
                         </Typography>
                         {test &&
                             <React.Fragment>
-                                {test.current_order === -2 && <TestCompleted />}
+                                {test.current_order === -2 && <TestCompleted test={testData} />}
                                 {test.current_order === 0 && <TestReady test={testData} />}
                                 {test.current_order > 0 && <AnswerQuestion test={testData} />}
                             </React.Fragment>

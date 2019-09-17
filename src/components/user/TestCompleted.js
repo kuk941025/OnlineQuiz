@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import Typography from '@material-ui/core/Typography'
+import { connect } from 'react-redux'
+import { analyzeTest } from '../../store/actions/testActions'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -10,9 +12,12 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
     }
 }))
-const TestCompleted = () => {
+const TestCompleted = ({ analyzeTest, test }) => {
     const classes = useStyles();
 
+    useEffect(() => {
+        analyzeTest(test)
+    }, [])
     return (
         <div className={classes.root}>
             <div>
@@ -25,4 +30,9 @@ const TestCompleted = () => {
     )
 }
 
-export default TestCompleted
+const mapDispatchToProps = dispatch => {
+    return {
+        analyzeTest: test => dispatch(analyzeTest(test))
+    }
+}
+export default connect(null, mapDispatchToProps)(TestCompleted)
