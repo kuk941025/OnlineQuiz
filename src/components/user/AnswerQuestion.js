@@ -92,8 +92,6 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
             if (state == 0) {
                 setPicker(true);
             }
-            else setPicker(false);
-
 
             if (state === 1) {
                 //if started accepting response, run timer.
@@ -117,7 +115,6 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
 
                     //start recording time
                     setStarted(moment(new Date()));
-                    setPicker(true);
                 }
             }
 
@@ -236,7 +233,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                 </React.Fragment>
             ) : (
                     <div className={classes.answerRoot}>
-                        <AnswerCompleted question={question} test={test} time={elaspedTime} />
+                        <AnswerCompleted question={question} test={test} />
                     </div>
                 )}
 

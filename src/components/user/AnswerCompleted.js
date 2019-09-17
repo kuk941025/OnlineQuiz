@@ -16,12 +16,12 @@ const useStyles = makeStyles(theme => ({
     },
     progress_root
 }))
-const AnswerCompleted = ({ test, question, connectToAnswer, answer, time }) => {
+const AnswerCompleted = ({ test, question, connectToAnswer, answer }) => {
     const classes = useStyles();
     const [answerData, setAnswer] = useState(null);
 
     useEffect(() => {
-        if (question.state === 2){
+        if (question.state === 2) {
             connectToAnswer(test.id, question.id);
         };
 
@@ -40,19 +40,31 @@ const AnswerCompleted = ({ test, question, connectToAnswer, answer, time }) => {
                 {question.state === 2 ? (
                     <React.Fragment>
                         {answerData ? (
-                            <div>
-                                <Typography variant="body1" align="center">
-                                    {`순위: ${answer.rank}위`}
-                                </Typography>
-                                <Typography variant="body1" color="primary" align="center">
-                                    {`${time/1000}초`}
-                                </Typography>
-                            </div>
+                            answerData.rank !== Infinity ? (
+                                <div>
+                                    <Typography variant="body1" align="center">
+                                        {`순위: ${answer.rank}위`}
+                                    </Typography>
+                                    {answer.time !== Infinity &&
+                                        <Typography variant="body1" color="primary" align="center">
+                                            {`${answer.time / 1000}초`}
+                                        </Typography>
+                                    }
+
+                                </div>
+                            ) : (
+                                <div>
+                                    <Typography variant="body1" align="center" color="error">
+                                        시간 초과
+                                    </Typography>
+                                </div>
+                            )
+
                         ) : (
-                            <div className={classes.progress_root}>
-                                <CircularProgress />
-                            </div>
-                        )}
+                                <div className={classes.progress_root}>
+                                    <CircularProgress />
+                                </div>
+                            )}
                     </React.Fragment>
                 ) : (
                         <React.Fragment>
@@ -73,13 +85,13 @@ const AnswerCompleted = ({ test, question, connectToAnswer, answer, time }) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        connectToAnswer: (test_id, question_id) => dispatch(connectToAnswer(test_id, question_id)), 
+        connectToAnswer: (test_id, question_id) => dispatch(connectToAnswer(test_id, question_id)),
     }
 }
 
 const mapStateToProps = state => {
     return {
-        answer: state.user.answer, 
+        answer: state.user.answer,
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AnswerCompleted)

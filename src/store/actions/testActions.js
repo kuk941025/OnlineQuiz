@@ -1,5 +1,6 @@
 import { Server_URL } from '../../components/util/Const'
 import axios from 'axios'
+import moment from 'moment'
 
 export const getTest = () => {
     return async (dispatch, getState, { getFirestore }) => {
@@ -259,7 +260,8 @@ export const initTest = (test) => {
 export const analyzeTest = test => {
     return async (dispatch, getState) => {
         await axios.post(`${Server_URL}/analyze_result`, {
-            test_id: test.id
+            test_id: test.id,
+            time_at: moment(new Date()).format('YYYYMMDD_HHmmss'),
         });
 
         dispatch({ type: 'TEST_ANALYZED' });
