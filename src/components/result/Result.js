@@ -11,6 +11,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
+import ResultChart from './ResultChart'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     },
     questionRoot: {
         border: `1px solid #eee`,
-        padding: theme.spacing(1), 
+        padding: theme.spacing(1),
     },
     gridChartRoot: {
         marginTop: theme.spacing(1)
@@ -66,7 +67,7 @@ const Result = ({ match }) => {
             setCurQuestion({
                 id: 'FINAL',
                 title: '',
-                content: '', 
+                content: '',
             })
             return;
         }
@@ -104,21 +105,21 @@ const Result = ({ match }) => {
                 <Divider className={classes.divider} />
                 <Grid container justify="center">
                     <Grid item md={6} className={classes.questionRoot}>
-                        <Typography variant="body1" gutterBottom style={{fontWeight: 600}} align="center">
+                        <Typography variant="body1" gutterBottom style={{ fontWeight: 600 }} align="center">
                             {curQuestion.title}
                         </Typography>
-                        <Typography variant="body1">    
+                        <Typography variant="body1">
                             {curQuestion.content}
                         </Typography>
                     </Grid>
                 </Grid>
-                
+
                 <Grid container className={classes.gridChartRoot} spacing={2}>
-                    <Grid item md={6} >
-                        asd
+                    <Grid item md={12} >
+                        <ResultChart color="blues" />
                     </Grid>
-                    <Grid item md={6} >
-                        asd
+                    <Grid item md={12} >
+                        <ResultChart color="greens" />
                     </Grid>
                 </Grid>
             </Paper>
