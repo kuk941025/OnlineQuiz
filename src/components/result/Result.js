@@ -104,7 +104,7 @@ const Result = ({ match }) => {
                 let selectData = [];
                 for (let select of curQuestion.selected) {
                     let item = {
-                        choice: select.choice,
+                        choice: select.choice === 'NONE' ? '시간초과' : select.choice,
                         cnt: select.cnt
                     };
 
