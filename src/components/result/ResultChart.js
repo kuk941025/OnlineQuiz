@@ -1,16 +1,17 @@
 import React from 'react'
 import { ResponsiveBar } from '@nivo/bar'
+import { compose } from 'recompose'
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-const MyResponsiveBar = ({ data, color }) => (
+const MyResponsiveBar = ({ data, color, y_axis, x_axis, indexBy, keys }) => (
     <ResponsiveBar
         data={data}
-        keys={['hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut']}
-        indexBy="country"
+        keys={keys}
+        indexBy={indexBy}
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
         colors={{ scheme: color }}
@@ -21,7 +22,7 @@ const MyResponsiveBar = ({ data, color }) => (
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'country',
+            legend: x_axis,
             legendPosition: 'middle',
             legendOffset: 32
         }}
@@ -29,7 +30,7 @@ const MyResponsiveBar = ({ data, color }) => (
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'food',
+            legend: y_axis,
             legendPosition: 'middle',
             legendOffset: -40
         }}
@@ -70,113 +71,208 @@ const data = [
     {
         "country": "AD",
         "hot dog": 196,
-        "hot dogColor": "hsl(104, 70%, 50%)",
         "burger": 49,
-        "burgerColor": "hsl(358, 70%, 50%)",
         "sandwich": 154,
-        "sandwichColor": "hsl(108, 70%, 50%)",
         "kebab": 45,
-        "kebabColor": "hsl(207, 70%, 50%)",
         "fries": 77,
-        "friesColor": "hsl(16, 70%, 50%)",
         "donut": 53,
-        "donutColor": "hsl(62, 70%, 50%)"
     },
     {
         "country": "AE",
         "hot dog": 93,
-        "hot dogColor": "hsl(302, 70%, 50%)",
         "burger": 177,
-        "burgerColor": "hsl(280, 70%, 50%)",
         "sandwich": 120,
-        "sandwichColor": "hsl(55, 70%, 50%)",
         "kebab": 196,
-        "kebabColor": "hsl(267, 70%, 50%)",
         "fries": 189,
-        "friesColor": "hsl(283, 70%, 50%)",
         "donut": 188,
-        "donutColor": "hsl(82, 70%, 50%)"
     },
     {
         "country": "AF",
         "hot dog": 89,
-        "hot dogColor": "hsl(26, 70%, 50%)",
         "burger": 102,
-        "burgerColor": "hsl(114, 70%, 50%)",
         "sandwich": 21,
-        "sandwichColor": "hsl(321, 70%, 50%)",
         "kebab": 51,
-        "kebabColor": "hsl(291, 70%, 50%)",
         "fries": 76,
-        "friesColor": "hsl(118, 70%, 50%)",
         "donut": 146,
-        "donutColor": "hsl(166, 70%, 50%)"
     },
     {
         "country": "AG",
         "hot dog": 3,
-        "hot dogColor": "hsl(317, 70%, 50%)",
         "burger": 129,
-        "burgerColor": "hsl(127, 70%, 50%)",
         "sandwich": 95,
-        "sandwichColor": "hsl(275, 70%, 50%)",
         "kebab": 140,
-        "kebabColor": "hsl(259, 70%, 50%)",
         "fries": 126,
-        "friesColor": "hsl(311, 70%, 50%)",
         "donut": 168,
-        "donutColor": "hsl(312, 70%, 50%)"
+
     },
     {
         "country": "AI",
         "hot dog": 165,
-        "hot dogColor": "hsl(198, 70%, 50%)",
         "burger": 122,
-        "burgerColor": "hsl(329, 70%, 50%)",
         "sandwich": 45,
-        "sandwichColor": "hsl(3, 70%, 50%)",
         "kebab": 152,
-        "kebabColor": "hsl(359, 70%, 50%)",
         "fries": 122,
-        "friesColor": "hsl(41, 70%, 50%)",
         "donut": 181,
-        "donutColor": "hsl(181, 70%, 50%)"
     },
     {
         "country": "AL",
         "hot dog": 168,
-        "hot dogColor": "hsl(342, 70%, 50%)",
         "burger": 92,
-        "burgerColor": "hsl(253, 70%, 50%)",
         "sandwich": 144,
-        "sandwichColor": "hsl(97, 70%, 50%)",
         "kebab": 49,
-        "kebabColor": "hsl(351, 70%, 50%)",
         "fries": 25,
-        "friesColor": "hsl(193, 70%, 50%)",
         "donut": 105,
-        "donutColor": "hsl(45, 70%, 50%)"
     },
     {
         "country": "AM",
         "hot dog": 21,
-        "hot dogColor": "hsl(127, 70%, 50%)",
         "burger": 68,
-        "burgerColor": "hsl(151, 70%, 50%)",
         "sandwich": 104,
-        "sandwichColor": "hsl(205, 70%, 50%)",
         "kebab": 153,
-        "kebabColor": "hsl(171, 70%, 50%)",
         "fries": 161,
-        "friesColor": "hsl(249, 70%, 50%)",
         "donut": 119,
-        "donutColor": "hsl(97, 70%, 50%)"
+    },
+    {
+        "country": "BD",
+        "hot dog": 196,
+        "burger": 49,
+        "sandwich": 154,
+        "kebab": 45,
+        "fries": 77,
+        "donut": 53,
+    },
+    {
+        "country": "BE",
+        "hot dog": 93,
+        "burger": 177,
+        "sandwich": 120,
+        "kebab": 196,
+        "fries": 189,
+        "donut": 188,
+    },
+    {
+        "country": "BF",
+        "hot dog": 89,
+        "burger": 102,
+        "sandwich": 21,
+        "kebab": 51,
+        "fries": 76,
+        "donut": 146,
+    },
+    {
+        "country": "BG",
+        "hot dog": 3,
+        "burger": 129,
+        "sandwich": 95,
+        "kebab": 140,
+        "fries": 126,
+        "donut": 168,
+
+    },
+    {
+        "country": "BI",
+        "hot dog": 165,
+        "burger": 122,
+        "sandwich": 45,
+        "kebab": 152,
+        "fries": 122,
+        "donut": 181,
+    },
+    {
+        "country": "BL",
+        "hot dog": 168,
+        "burger": 92,
+        "sandwich": 144,
+        "kebab": 49,
+        "fries": 25,
+        "donut": 105,
+    },
+    {
+        "country": "CM",
+        "hot dog": 21,
+        "burger": 68,
+        "sandwich": 104,
+        "kebab": 153,
+        "fries": 161,
+        "donut": 119,
+    },
+    {
+        "country": "CD",
+        "hot dog": 196,
+        "burger": 49,
+        "sandwich": 154,
+        "kebab": 45,
+        "fries": 77,
+        "donut": 53,
+    },
+    {
+        "country": "CE",
+        "hot dog": 93,
+        "burger": 177,
+        "sandwich": 120,
+        "kebab": 196,
+        "fries": 189,
+        "donut": 188,
+    },
+    {
+        "country": "CF",
+        "hot dog": 89,
+        "burger": 102,
+        "sandwich": 21,
+        "kebab": 51,
+        "fries": 76,
+        "donut": 146,
+    },
+    {
+        "country": "CG",
+        "hot dog": 3,
+        "burger": 129,
+        "sandwich": 95,
+        "kebab": 140,
+        "fries": 126,
+        "donut": 168,
+
+    },
+    {
+        "country": "CI",
+        "hot dog": 165,
+        "burger": 122,
+        "sandwich": 45,
+        "kebab": 152,
+        "fries": 122,
+        "donut": 181,
+    },
+    {
+        "country": "CL",
+        "hot dog": 168,
+        "burger": 92,
+        "sandwich": 144,
+        "kebab": 49,
+        "fries": 25,
+        "donut": 105,
+    },
+    {
+        "country": "CM",
+        "hot dog": 21,
+        "burger": 68,
+        "sandwich": 104,
+        "kebab": 153,
+        "fries": 161,
+        "donut": 119,
     }
 ]
-const ResultChart = ({ color }) => {
+const ResultChart = ({ color, y_axis, x_axis, data, indexBy }) => {
+    if (!data) return null;
+    console.log(data);
     return (
-        <div style={{ width: '100%', height: 600 }}>
-            <MyResponsiveBar data={data} color={color} />
+        <div style={{ width: '100%', height: 100 + 40 * data.data.length, minHeight: 250,  }}>
+            <MyResponsiveBar
+                indexBy={indexBy}
+                keys={data.keys}    
+                data={data.data}
+                color={color}
+                y_axis={y_axis}
+                x_axis={x_axis} />
         </div>
     )
 }

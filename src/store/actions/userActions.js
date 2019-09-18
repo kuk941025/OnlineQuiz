@@ -107,10 +107,13 @@ export const submitAnswer = (test_id, question_id, answer, time) => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
         const auth = getState().auth;
-        db.doc(`tests/${test_id}/questions/${question_id}/answers/${auth.user.phone}`).set({
+        const { phone, last_name, first_name } = auth.user;
+        db.doc(`tests/${test_id}/questions/${question_id}/answers/${phone}`).set({
             created_at: new Date(),
             answer,
-            time
+            time,
+            last_name,
+            first_name,
         });
 
         let questionRef = db.doc(`tests/${test_id}/questions/${question_id}`)

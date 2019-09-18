@@ -47,6 +47,10 @@ const Result = ({ match }) => {
     const [resultData, setResult] = useState(null);
     const [err, setErr] = useState(false);
     const [curQuestion, setCurQuestion] = useState(null);
+    const [selectionData, setSelectionData] = useState(null);
+    const [responseData, setResponseData] = useState(null);
+    const [overallData, setOverallData] = useState(null);
+
     const results = useSelector(state => state.result.results);
 
     useEffect(() => {
@@ -62,6 +66,62 @@ const Result = ({ match }) => {
     }, []);
 
 
+    useEffect(() => {
+        if (curQuestion) {
+            if (curQuestion.id === 'FINAL') {
+                setResponseData(null);
+                setSelectionData(null);
+
+                let data = [];
+                for (let rank of resultData.ranks) {
+                    let item = {
+                        name: rank.last_name + rank.first_name,
+                        score: rank.score, 
+                    };
+                    data.push(item);
+                }
+
+                setOverallData({
+                    keys: ['score'],
+                    data, 
+                })
+            }
+            else {
+                let data = [];
+                for (let answer of curQuestion.answers) {
+                    let item = {
+                        name: answer.last_name + answer.first_name,
+                        response_time: answer.time === Infinity ? 0 : answer.time,
+                    };
+                    data.push(item);
+                }
+
+                setResponseData({
+                    keys: ['response_time'],
+                    data,
+                });
+
+                let selectData = [];
+                for (let select of curQuestion.selected) {
+                    let item = {
+                        choice: select.choice,
+                        cnt: select.cnt
+                    };
+
+                    selectData.push(item);
+                };
+
+                setSelectionData({
+                    keys: ['cnt'],
+                    data: selectData,
+                })
+            }
+
+        }
+    }, [curQuestion])
+
+
+
     const handleChangeQuestion = e => {
         if (e.target.value === 'FINAL') {
             setCurQuestion({
@@ -72,8 +132,11 @@ const Result = ({ match }) => {
             return;
         }
         let targetQuestion = resultData.questions.find(question => question.id === e.target.value);
+
         setCurQuestion(targetQuestion);
     }
+
+
 
 
     if (results.length === 0 || err) return <Redirect to={`/results/${match.params.test_id}`} />
@@ -116,10 +179,13 @@ const Result = ({ match }) => {
 
                 <Grid container className={classes.gridChartRoot} spacing={2}>
                     <Grid item md={12} >
-                        <ResultChart color="blues" />
+                        <ResultChart color="nivo" x_axis="횟수" y_axis="" data={selectionData} indexBy="choice" />
                     </Grid>
                     <Grid item md={12} >
-                        <ResultChart color="greens" />
+                        <ResultChart color="category10" x_axis="반응시간" y_axis="이름" data={responseData} indexBy="name" />
+                    </Grid>
+                    <Grid item md={12}>
+                        <ResultChart color="category10" x_axis="점수" y_axis="이름" data={overallData} indexBy="name"/>
                     </Grid>
                 </Grid>
             </Paper>
