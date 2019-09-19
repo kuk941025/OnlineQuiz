@@ -18,9 +18,7 @@ export const signIn = (phone) => {
             db.doc(`users/${phone}`).update({
                 uid: auth.user.uid,
             });
-            db.doc(`auths/${auth.user.uid}`).set({
-                phone, created_at: new Date(), ...user_snap.data()
-            })
+
             dispatch({ type: 'AUTH_SIGN_IN', auth });
         } catch (err) {
             dispatch({ type: 'AUTH_ERROR', err });
@@ -67,20 +65,24 @@ export const signUp = creds => {
 
 export const getUserData = () => {
     return async (dispatch, getState, { getFirestore, getFirebase }) => {
-        const uid = getState().firebase.auth.uid;
+        const state = getState();
+        const uid = state.firebase.auth.uid;
         const db = getFirestore();
 
-        let user_snap = await db.collection(`users`).where('uid', '==', uid).limit(1).get();
-        let user;
-        if (user_snap.size === 0){
-            //if not found find from auths collection
-            user = await db.doc(`auths/${uid}`).get();
-            
-            return;
-        }
-        else user = user_snap.docs[0];
+        console.log(uid);
+        if (state.snapshot) state.snapshot();
 
-        
-        dispatch({ type: 'USER_DATA_LOADED', result: {phone: user.id, ...user.data()} })
+        let user_snap = db.collection(`users`).where('uid', '==', uid).limit(1).onSnapshot(userSnap => {
+            console.log(userSnap.size);
+            if (userSnap.size === 1) {
+                let doc = userSnap.docs[0];
+                dispatch({ type: 'USER_DATA_LOADED', result: { phone: doc.id, ...doc.data() } });
+                user_snap();
+            }
+        });
+
+        dispatch({ type: 'USER_DATA_SNAPSHOT', user_snap });
+
+
     }
 }

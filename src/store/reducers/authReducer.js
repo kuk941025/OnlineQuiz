@@ -3,6 +3,7 @@ const initState = {
     is_admin: false,
     sign_up_error: '', 
     user: null,
+    snapshot: null, 
 }
 
 const authReducer = (state = initState, action) => {
@@ -34,10 +35,15 @@ const authReducer = (state = initState, action) => {
             console.log(action.result);
             return {
                 ...state,
-                user: action.result
+                user: action.result,
+                snapshot: null, 
             }
         
-
+        case 'USER_DATA_SNAPSHOT':
+            return {
+                ...state,
+                snapshot: action.user_snap
+            }
         default:
             return state;
     }
