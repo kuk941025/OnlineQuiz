@@ -83,6 +83,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
         }
     }, [test.current_order]);
 
+
     useEffect(() => {
         if (selected_question) {
             setQuestion(selected_question);
@@ -107,6 +108,8 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                                 setLocalTimer(null);
                                 return 0;
                             }
+                            else if (!showPicker) setPicker(true);
+                            
                             return oldRemaining + add_value;
                         })
                     };

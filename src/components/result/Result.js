@@ -40,6 +40,9 @@ const useStyles = makeStyles(theme => ({
     },
     gridChartRoot: {
         marginTop: theme.spacing(1)
+    },
+    gridItem: {
+        margin: `${theme.spacing(1)}px 0px`
     }
 }))
 const Result = ({ match }) => {
@@ -96,7 +99,8 @@ const Result = ({ match }) => {
                     };
                     data.push(item);
                 }
-
+                
+                data.sort((a, b) => a.response_time > b.response_time ? -1 : a.response_time < b.response_time ? 1 : 0);
                 setResponseData({
                     keys: ['response_time'],
                     data,
@@ -112,6 +116,7 @@ const Result = ({ match }) => {
                     selectData.push(item);
                 };
 
+                selectData.sort((a, b) => a.cnt > b.cnt ? -1 : a.cnt < b.cnt ? 1 : 0);
                 setSelectionData({
                     keys: ['cnt'],
                     data: selectData,
@@ -159,7 +164,7 @@ const Result = ({ match }) => {
                             onChange={handleChangeQuestion}
                         >
                             {resultData.questions.map((question, idx) => (
-                                <MenuItem key={question.id} value={question.id}>{`${idx}. ${question.title}`}</MenuItem>
+                                <MenuItem key={question.id} value={question.id}>{`${idx + 1}. ${question.title}`}</MenuItem>
                             ))}
                             <MenuItem value="FINAL">최종결과</MenuItem>
                         </Select>
@@ -179,14 +184,14 @@ const Result = ({ match }) => {
                 </Grid>
 
                 <Grid container className={classes.gridChartRoot} spacing={2}>
-                    <Grid item md={12} >
-                        <ResultChart color="nivo" x_axis="횟수" y_axis="" data={selectionData} indexBy="choice" />
+                    <Grid item md={12} className={classes.gridItem}>
+                        <ResultChart color="nivo" x_axis="횟수" y_axis="" data={selectionData} indexBy="choice" title="선택 결과"/>
                     </Grid>
-                    <Grid item md={12} >
-                        <ResultChart color="category10" x_axis="반응시간" y_axis="이름" data={responseData} indexBy="name" />
+                    <Grid item md={12} className={classes.gridItem}>
+                        <ResultChart color="category10" x_axis="반응시간" y_axis="" data={responseData} indexBy="name" title="응답시간"/>
                     </Grid>
-                    <Grid item md={12}>
-                        <ResultChart color="category10" x_axis="점수" y_axis="이름" data={overallData} indexBy="name"/>
+                    <Grid item md={12} className={classes.gridItem}>
+                        <ResultChart color="category10" x_axis="점수" y_axis="" data={overallData} indexBy="name" title="최종결과"/>
                     </Grid>
                 </Grid>
             </Paper>
