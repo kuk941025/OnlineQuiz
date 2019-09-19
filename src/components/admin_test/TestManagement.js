@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import { connect } from 'react-redux'
-import { connectToQuestion, loadQuestions, startQuestion, nextQuestion } from '../../store/actions/testActions'
+import { connectToQuestion, loadQuestions, startQuestion, nextQuestion, seeResult } from '../../store/actions/testActions'
 import { button } from '../css/Styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
@@ -10,9 +10,14 @@ import { progress_root } from '../css/Styles'
 import classNames from 'classnames'
 import Divider from '@material-ui/core/Divider'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import Link from '@material-ui/core/Link'
+import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
-    button: button(theme),
+    button: {
+        ...button(theme),
+        marginBottom: theme.spacing(2),
+    },
     secondaryButton: button(theme),
     typoTitle: {
         fontWeight: 600,
@@ -85,7 +90,7 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
                 setRemaining(oldRemaining => {
                     if (oldRemaining >= 100) {
                         clearInterval(timer);
-                    
+
                         return 0;
                     }
 
@@ -148,10 +153,16 @@ const TestManagement = ({ test, selected_question, connectToQuestion, loadQuesti
                 {question.state === 1 &&
                     <LinearProgress color="primary" variant="determinate" value={remaining} />
                 }
-                {question.state === 2 && 
-                    <Button fullWidth className={classes.button} onClick={() => nextQuestion(test)}>
-                        Next Question
-                    </Button>
+                {question.state === 2 &&
+                    <React.Fragment>
+                        <Button fullWidth className={classes.button} onClick={() => nextQuestion(test)}>
+                            Next Question
+                        </Button>
+                        <Link to={`/view_result/${test.id}/${question.id}`} component={RouterLink} target="_blank" >
+                            View Immediate Result
+                        </Link>
+                    </React.Fragment>
+
                 }
             </div>
 
@@ -172,8 +183,9 @@ const mapDispatchToProps = dispatch => {
     return {
         connectToQuestion: (test_id, question_order) => dispatch(connectToQuestion(test_id, question_order)),
         loadQuestions: (test_id) => dispatch(loadQuestions(test_id)),
-        startQuestion: (test, question_id) => dispatch(startQuestion(test, question_id)), 
-        nextQuestion: (test) => dispatch(nextQuestion(test))
+        startQuestion: (test, question_id) => dispatch(startQuestion(test, question_id)),
+        nextQuestion: (test) => dispatch(nextQuestion(test)),
+        seeResult: (test_id, question_id) => dispatch(seeResult(test_id, question_id)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TestManagement)

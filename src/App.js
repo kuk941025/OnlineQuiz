@@ -9,6 +9,7 @@ import UserLayout from './components/user/UserLayout'
 import UserSignUp from './components/auth/UserSignUp'
 import ResultList from './components/result/ResultList'
 import Result from './components/result/Result'
+import ImmediateResult from './components/admin_test/ImmediateResult'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route exact path="/admin" component={AdminLayout} />
             <Route path="/admin/test/:test_id/question/:question_id" component={EditQuestion} />
             <Route path="/admin/test/:id" component={AdminTestLayout} />
+            <Route path="/view_result/:test_id/:question_id" component={ImmediateResult} />
           </Switch>
         </Container>
 

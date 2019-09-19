@@ -8,7 +8,8 @@ const initState = {
     selected_question: null,
     selected_question_result: '',
     cur_question_idx: -1,
-    question_snap: null,   
+    question_snap: null,
+    answers: null,    
 }
 
 const testReducer = (state = initState, action) => {
@@ -117,6 +118,11 @@ const testReducer = (state = initState, action) => {
         case 'TEST_INITALIZED':
             return state;
             
+        case 'IMMEDIATE_ANSWERS_LOADED':
+            return {
+                ...state,
+                answers: action.result, 
+            }
         default:
             return state;
     }

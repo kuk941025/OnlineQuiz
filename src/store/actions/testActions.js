@@ -267,3 +267,17 @@ export const analyzeTest = test => {
         dispatch({ type: 'TEST_ANALYZED' });
     }
 }
+
+export const seeResult = (test_id, question_id) => {
+    return async (dispatch, getState, { getFirestore }) => {
+        const firestore = getFirestore();
+
+        let answer_snap = await firestore.collection(`tests/${test_id}/questions/${question_id}/answers`).orderBy('rank').get();
+        let answers = [];
+        for (let answer_doc of answer_snap.docs) {
+            answers.push({ id: answer_doc.id, ...answer_doc.data() });
+        }
+
+        dispatch({ type: 'IMMEDIATE_ANSWERS_LOADED', result: answers })
+    }
+}
