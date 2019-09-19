@@ -34,7 +34,14 @@ const useStyles = makeStyles(theme => ({
         border: `1px solid #eee`
     }
 }))
-
+const initQuestion = {
+    title: '',
+    content: '',
+    selections: [],
+    is_test: 0,
+    order: 0,
+    state: 0,
+}
 //mode - 0: add, 1: edit
 const Question = ({ test_id, addQuestion, mode, selected_question, editQuestion }) => {
     const classes = useStyles();
@@ -45,14 +52,7 @@ const Question = ({ test_id, addQuestion, mode, selected_question, editQuestion 
             setList(selected_question.selections)
         }
     }, [mode, selected_question])
-    const [question, setQuestion] = useState({
-        title: '',
-        content: '',
-        selections: [],
-        is_test: 0,
-        order: 0,
-        state: 0,
-    })
+    const [question, setQuestion] = useState(initQuestion)
     const [selection, setSelection] = useState('');
     const [selectList, setList] = useState([]);
     const handleChange = e => {
@@ -109,6 +109,9 @@ const Question = ({ test_id, addQuestion, mode, selected_question, editQuestion 
         if (is_validate && question['is_test'] >= 0 && question['is_test'] <= 1) {
             if (mode === 0) addQuestion(test_id, question);
             else if (mode === 1) editQuestion(test_id, question.id, question); 
+
+            setQuestion(initQuestion);
+            setList([]);
         }
         else {
             console.log(question);

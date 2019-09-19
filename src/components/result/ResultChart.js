@@ -263,7 +263,7 @@ const data = [
 ]
 const ResultChart = ({ color, y_axis, x_axis, data, indexBy }) => {
     if (!data) return null;
-    console.log(data);
+
     return (
         <div style={{ width: '100%', height: 100 + 40 * data.data.length, minHeight: 250,  }}>
             <MyResponsiveBar

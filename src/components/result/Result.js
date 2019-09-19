@@ -87,6 +87,7 @@ const Result = ({ match }) => {
                 })
             }
             else {
+                setOverallData(null);
                 let data = [];
                 for (let answer of curQuestion.answers) {
                     let item = {
