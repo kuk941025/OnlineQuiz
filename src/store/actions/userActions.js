@@ -17,7 +17,7 @@ export const connectToTest = (test_id) => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
         const state = getState();
-        console.log(state.auth)
+
         const { phone } = state.auth.user;
 
         let testRef = db.doc(`tests/${test_id}`);
@@ -149,8 +149,6 @@ export const connectToAnswer = (test_id, question_id) => {
         if (user.answer_snap) user.answer_snap();
 
 
-        console.log('called');
-        console.log(test_id);
         let answer_snap = db.doc(`tests/${test_id}/questions/${question_id}/answers/${auth.phone}`).onSnapshot(doc => {
             if (doc.exists) {
                 let data = doc.data();

@@ -32,7 +32,6 @@ const authReducer = (state = initState, action) => {
             }
 
         case 'USER_DATA_LOADED':
-            console.log(action.result);
             return {
                 ...state,
                 user: action.result,

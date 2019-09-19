@@ -69,7 +69,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
     const [startedTime, setStarted] = useState(null);
     const [timer, setLocalTimer] = useState(null);
     const [elaspedTime, setElasped] = useState('0');
-
+    const [answerStarted, setAnswerStarted] = useState(false);
     useEffect(() => {
         if (questions) setList(questions);
 
@@ -88,10 +88,10 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
         if (selected_question) {
             setQuestion(selected_question);
 
-            console.log(selected_question);
             const { state } = selected_question;
             if (state == 0) {
                 setPicker(true);
+                setAnswerStarted(true);
             }
 
             if (state === 1) {
@@ -99,7 +99,8 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                 const interval = 250;
                 let add_value = Math.ceil(interval / (test.limit_time * 1000) * 100);
 
-                if (!timer) {
+                if (answerStarted) {
+                    setAnswerStarted(false);
                     const setTimer = () => {
                         setRemaining(oldRemaining => {
                             if (oldRemaining >= 100) {
@@ -109,7 +110,7 @@ const AnswerQuestion = ({ test, questions, connectToQuestion, selected_question,
                                 return 0;
                             }
                             else if (!showPicker) setPicker(true);
-                            
+
                             return oldRemaining + add_value;
                         })
                     };

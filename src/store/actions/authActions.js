@@ -69,11 +69,10 @@ export const getUserData = () => {
         const uid = state.firebase.auth.uid;
         const db = getFirestore();
 
-        console.log(uid);
         if (state.snapshot) state.snapshot();
 
         let user_snap = db.collection(`users`).where('uid', '==', uid).limit(1).onSnapshot(userSnap => {
-            console.log(userSnap.size);
+
             if (userSnap.size === 1) {
                 let doc = userSnap.docs[0];
                 dispatch({ type: 'USER_DATA_LOADED', result: { phone: doc.id, ...doc.data() } });

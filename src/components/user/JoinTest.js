@@ -46,10 +46,9 @@ const JoinTest = ({ getAvailableTests, tests, history, user }) => {
         history.push(`/test/${id}`);
     }
 
-    console.log(history);
     return (
         <React.Fragment>
-            {testData ? (
+            {testData && user ? (
                 <div>
                     {user &&
                         <Typography variant="body1" className={classes.typoName}>
